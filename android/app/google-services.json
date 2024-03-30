@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "263777155260",
+    "project_id": "finchat-361e8",
+    "storage_bucket": "finchat-361e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263777155260:android:722c86992f5527cbbd38b9",
+        "android_client_info": {
+          "package_name": "com.cashswift.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVYiUIiZxtXwjtHqBNt2jsoE8BU6dF1EE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
