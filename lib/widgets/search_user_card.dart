@@ -1,10 +1,14 @@
 import 'package:cash_swift/models/cash_swift_user.dart';
+import 'package:cash_swift/providers/transaction/category_list_provider.dart';
+import 'package:cash_swift/providers/transaction/data_providers.dart';
+import 'package:cash_swift/providers/transaction/transaction_loading_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:profile_photo/profile_photo.dart';
 
-class SearchUserCard extends StatelessWidget {
+class SearchUserCard extends ConsumerWidget {
   const SearchUserCard({super.key, required this.cashSwiftUser});
 
   final CashSwiftUser cashSwiftUser;
@@ -14,9 +18,12 @@ class SearchUserCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
+        ref.read(noteContentProvider.notifier).state = "";
+        ref.read(transactionStatusProvider.notifier).state = false;
+        ref.read(categoryListProvider.notifier).resetCategories();
         GoRouter.of(context)
             .go("/home/payment/transaction", extra: cashSwiftUser);
       },

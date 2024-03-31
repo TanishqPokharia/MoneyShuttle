@@ -4,6 +4,9 @@ import 'package:cash_swift/providers/home/cash_swift_id_provider.dart';
 import 'package:cash_swift/providers/home/cash_swift_id_verification_provider.dart';
 import 'package:cash_swift/providers/home/check_balance_provider.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
+import 'package:cash_swift/providers/transaction/category_list_provider.dart';
+import 'package:cash_swift/providers/transaction/data_providers.dart';
+import 'package:cash_swift/providers/transaction/transaction_loading_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -257,29 +260,18 @@ class HomeScreen extends ConsumerWidget {
                               duration: const Duration(seconds: 1),
                               curve: Curves.easeOutSine,
                               opacity: ref.watch(checkBalanceProvider) ? 1 : 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  ref
-                                          .read(checkBalanceProvider.notifier)
-                                          .state =
-                                      !ref
-                                          .read(checkBalanceProvider.notifier)
-                                          .state;
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.currency_rupee_sharp,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      data['balance'].toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    )
-                                  ],
-                                ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.currency_rupee_sharp,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    data['balance'].toString(),
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  )
+                                ],
                               ),
                             ),
                             error: (error, stackTrace) => Text(
@@ -314,6 +306,16 @@ class HomeScreen extends ConsumerWidget {
                             children: [
                               ...history.take(3).map((e) => GestureDetector(
                                     onTap: () {
+                                      ref
+                                          .read(noteContentProvider.notifier)
+                                          .state = "";
+                                      ref
+                                          .read(transactionStatusProvider
+                                              .notifier)
+                                          .state = false;
+                                      ref
+                                          .read(categoryListProvider.notifier)
+                                          .resetCategories();
                                       GoRouter.of(context).go(
                                           "/home/transaction",
                                           extra: CashSwiftUser(

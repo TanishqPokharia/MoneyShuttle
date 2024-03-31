@@ -2,6 +2,9 @@ import 'package:cash_swift/main.dart';
 import 'package:cash_swift/providers/home/cash_swift_id_verification_provider.dart';
 import 'package:cash_swift/providers/qr_scan/qr_view_controller.dart';
 import 'package:cash_swift/providers/qr_scan/scan_result_provider.dart';
+import 'package:cash_swift/providers/transaction/category_list_provider.dart';
+import 'package:cash_swift/providers/transaction/data_providers.dart';
+import 'package:cash_swift/providers/transaction/transaction_loading_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -40,6 +43,9 @@ class QRScanScreenState extends ConsumerState<QRScanScreen> {
           .verifyCashSwiftID(ref.read(scanResultProvider)!.code!);
 
       if (ref.read(cashSwiftIDVerifyProvider) != null && mounted) {
+        ref.read(noteContentProvider.notifier).state = "";
+        ref.read(transactionStatusProvider.notifier).state = false;
+        ref.read(categoryListProvider.notifier).resetCategories();
         GoRouter.of(context).go("/home/scan/transaction",
             extra: ref.read(cashSwiftIDVerifyProvider));
       }

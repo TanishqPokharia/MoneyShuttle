@@ -19,4 +19,11 @@ class CategoryState extends StateNotifier<List<IndexedPaymentCategory>> {
     final iterable = state.where((element) => element.isSelected);
     return [iterable.first.title, iterable.first.color];
   }
+
+  void resetCategories() {
+    state.forEach((element) {
+      element.isSelected = false;
+    });
+    state = [...state];
+  }
 }

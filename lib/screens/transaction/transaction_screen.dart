@@ -334,100 +334,124 @@ class TransactionScreen extends ConsumerWidget {
                           //perform transaction
                           var userBalance = userData['balance'];
                           var receiverBalance = cashSwiftUser.balance;
-                          userBalance = userBalance - double.parse(amount);
-                          receiverBalance =
-                              receiverBalance! + double.parse(amount);
-                          print("Transaction performed");
 
-                          //update userBalance and update the payment category balance
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(user.uid)
-                              .update({
-                            "balance": userBalance,
-                            category: userData[category] + double.parse(amount),
-                            "expenditure":
-                                userData['expenditure'] + double.parse(amount)
-                          });
+                          if (userBalance < 0 ||
+                              userBalance < amount ||
+                              receiverBalance! < 0 ||
+                              receiverBalance < double.parse(amount)) {
+                            userBalance = userBalance - double.parse(amount);
+                            receiverBalance =
+                                receiverBalance! + double.parse(amount);
+                            print("Transaction performed");
 
-                          print("user balance updated");
+                            //update userBalance and update the payment category balance
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(user.uid)
+                                .update({
+                              "balance": userBalance,
+                              category:
+                                  userData[category] + double.parse(amount),
+                              "expenditure":
+                                  userData['expenditure'] + double.parse(amount)
+                            });
 
-                          //update receiver balance
-                          final findReceiverData = await FirebaseFirestore
-                              .instance
-                              .collection("users")
-                              .where("phoneNumber",
-                                  isEqualTo: cashSwiftUser.phoneNumber)
-                              .get();
+                            print("user balance updated");
 
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(findReceiverData.docs.first.id)
-                              .update({"balance": receiverBalance});
+                            //update receiver balance
+                            final findReceiverData = await FirebaseFirestore
+                                .instance
+                                .collection("users")
+                                .where("phoneNumber",
+                                    isEqualTo: cashSwiftUser.phoneNumber)
+                                .get();
 
-                          print("receiver balance updated");
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(findReceiverData.docs.first.id)
+                                .update({"balance": receiverBalance});
 
-                          // update user history
-                          final userHistory = userData['history'];
-                          userHistory.insert(0, {
-                            "name": cashSwiftUser.name,
-                            "balance": cashSwiftUser.balance,
-                            "phoneNumber": cashSwiftUser.phoneNumber,
-                            "CSid": cashSwiftUser.id,
-                            "note": ref.read(noteContentProvider),
-                            "amount": "-$amount",
-                            "category": category,
-                            "time":
-                                "${DateTime.now().hour}:${DateTime.now().minute}",
-                            "date": DateTime.now().day,
-                            "month": DateTime.now().month,
-                            "year": DateTime.now().year
-                          });
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(FirebaseAuth.instance.currentUser!.uid)
-                              .update({
-                            "history": userHistory,
-                          });
+                            print("receiver balance updated");
 
-                          print("User history updated");
+                            // update user history
+                            final userHistory = userData['history'];
+                            userHistory.insert(0, {
+                              "name": cashSwiftUser.name,
+                              "balance": cashSwiftUser.balance,
+                              "phoneNumber": cashSwiftUser.phoneNumber,
+                              "CSid": cashSwiftUser.id,
+                              "note": ref.read(noteContentProvider),
+                              "amount": "-$amount",
+                              "category": category,
+                              "time":
+                                  "${DateTime.now().hour}:${DateTime.now().minute}",
+                              "date": DateTime.now().day,
+                              "month": DateTime.now().month,
+                              "year": DateTime.now().year
+                            });
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              "history": userHistory,
+                            });
 
-                          //update receiver history
+                            print("User history updated");
 
-                          final receiverData =
-                              findReceiverData.docs.first.data();
-                          var receiverHistory = receiverData['history'];
-                          receiverHistory.insert(0, {
-                            "name": userData['userName'],
-                            "phoneNumber": userData['phoneNumber'],
-                            "note": ref.read(noteContentProvider),
-                            "CSid": userData['CSid'],
-                            "amount": "+$amount",
-                            "category": category,
-                            "time":
-                                "${DateTime.now().hour}:${DateTime.now().minute}",
-                            "date": DateTime.now().day,
-                            "month": DateTime.now().month,
-                            "year": DateTime.now().year
-                          });
+                            //update receiver history
 
-                          await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(findReceiverData.docs.first.id)
-                              .update({"history": receiverHistory});
+                            final receiverData =
+                                findReceiverData.docs.first.data();
+                            var receiverHistory = receiverData['history'];
+                            receiverHistory.insert(0, {
+                              "name": userData['userName'],
+                              "phoneNumber": userData['phoneNumber'],
+                              "note": ref.read(noteContentProvider),
+                              "CSid": userData['CSid'],
+                              "amount": "+$amount",
+                              "balance": userData['balance'],
+                              "category": category,
+                              "time":
+                                  "${DateTime.now().hour}:${DateTime.now().minute}",
+                              "date": DateTime.now().day,
+                              "month": DateTime.now().month,
+                              "year": DateTime.now().year
+                            });
 
-                          print("Receiver history updated");
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(findReceiverData.docs.first.id)
+                                .update({"history": receiverHistory});
 
-                          //fire notification to user and receiver
-                          NotificationServices.sendNotification(
-                              userToken: userData['deviceToken'],
-                              receiverToken: receiverData['deviceToken'],
-                              userNotificationBody:
-                                  "₹ $amount sent to ${cashSwiftUser.name}",
-                              receiverNotificationBody:
-                                  "₹ $amount received from ${userData['userName']}");
-                          ref.watch(transactionStatusProvider.notifier).state =
-                              true;
+                            print("Receiver history updated");
+
+                            //fire notification to user and receiver
+                            NotificationServices.sendNotification(
+                                userToken: userData['deviceToken'],
+                                receiverToken: receiverData['deviceToken'],
+                                userNotificationBody:
+                                    "₹ $amount sent to ${cashSwiftUser.name}",
+                                receiverNotificationBody:
+                                    "₹ $amount received from ${userData['userName']}");
+                            ref
+                                .watch(transactionStatusProvider.notifier)
+                                .state = true;
+                            Navigator.pop(savedContext);
+                            GoRouter.of(savedContext)
+                                .go("/home/status", extra: {
+                              "status": ref.watch(transactionStatusProvider),
+                              "amount": ref.watch(paymentAmountProvider),
+                              "receiverName": cashSwiftUser.name,
+                              "receiverPhoneNumber": cashSwiftUser.phoneNumber,
+                              "receiverID": cashSwiftUser.id
+                            });
+                          } else {
+                            Navigator.pop(savedContext);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("Insufficient Balance"),
+                              behavior: SnackBarBehavior.floating,
+                            ));
+                          }
                         } on Exception catch (e) {
                           // TODO
                           print(e);
@@ -435,14 +459,6 @@ class TransactionScreen extends ConsumerWidget {
                           print(e);
                         }
                         print("Yay");
-                        Navigator.pop(savedContext);
-                        GoRouter.of(savedContext).go("/home/status", extra: {
-                          "status": ref.watch(transactionStatusProvider),
-                          "amount": ref.watch(paymentAmountProvider),
-                          "receiverName": cashSwiftUser.name,
-                          "receiverPhoneNumber": cashSwiftUser.phoneNumber,
-                          "receiverID": cashSwiftUser.id
-                        });
                       }
                     },
                   ),
