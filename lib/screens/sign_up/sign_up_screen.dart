@@ -16,268 +16,278 @@ class SignUpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Container(
-            color: appBackgroundColor,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            padding: EdgeInsets.all(mq(context, 20)),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Image.asset(
-                    "assets/logonocaption.png",
-                    height: mq(context, 150),
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Sign Up",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      SizedBox(
-                        height: mq(context, 10),
-                      ),
-                      Text(
-                        "Unlock rapid fast payments in just a few steps!",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(fontSize: mq(context, 20)),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: mq(context, 20),
-                            vertical: mq(context, 10)),
-                        child: TextFormField(
-                          style: Theme.of(context).textTheme.titleMedium,
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey.withOpacity(0.2),
-                              filled: true,
-                              label: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.person,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: mq(context, 10),
-                                  ),
-                                  Text(
-                                    "Full Name",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              )),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Mandatory Field";
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            ref.read(signUpNameProvider.notifier).state =
-                                newValue!;
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: mq(context, 20),
-                            vertical: mq(context, 10)),
-                        child: TextFormField(
-                          style: Theme.of(context).textTheme.titleMedium,
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey.withOpacity(0.2),
-                              filled: true,
-                              label: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.email,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: mq(context, 10),
-                                  ),
-                                  Text(
-                                    "Email",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              )),
-                          validator: (value) {
-                            if (value!.isEmpty ||
-                                !value.contains("@") ||
-                                !value.contains(".com")) {
-                              return "Please enter a valid email";
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            ref.read(signUpEmailProvider.notifier).state =
-                                newValue!;
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: mq(context, 20),
-                            vertical: mq(context, 10)),
-                        child: TextFormField(
-                          obscureText: true,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey.withOpacity(0.2),
-                              filled: true,
-                              label: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.lock,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: mq(context, 10),
-                                  ),
-                                  Text(
-                                    "Password",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              )),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Please enter password";
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            ref.read(signUpPasswordProvider.notifier).state =
-                                newValue!;
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: mq(context, 20),
-                            vertical: mq(context, 10)),
-                        child: TextFormField(
-                          keyboardType: TextInputType.phone,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey.withOpacity(0.2),
-                              filled: true,
-                              prefixText: "+91  ",
-                              prefixStyle:
-                                  Theme.of(context).textTheme.titleMedium,
-                              label: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.dialpad,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: mq(context, 10),
-                                  ),
-                                  Text(
-                                    "Phone Number",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              )),
-                          validator: (value) {
-                            if (value!.length != 10 || int.parse(value).isNaN) {
-                              return "Please enter 10 digit mobile number";
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            ref.read(signUpPhoneNumberProvider.notifier).state =
-                                newValue!;
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: mq(context, 20),
-                            vertical: mq(context, 10)),
-                        child: TextFormField(
-                          keyboardType: TextInputType.phone,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          maxLength: 4,
-                          decoration: InputDecoration(
-                              counterText: "",
-                              fillColor: Colors.grey.withOpacity(0.2),
-                              filled: true,
-                              prefixStyle:
-                                  Theme.of(context).textTheme.titleMedium,
-                              label: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.pin,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: mq(context, 10),
-                                  ),
-                                  Text(
-                                    "4-Digit-Pin",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              )),
-                          validator: (value) {
-                            if (value!.length != 4 || int.parse(value).isNaN) {
-                              return "Please set a 4 digit pin";
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            ref.read(signUpPinProvider.notifier).state =
-                                newValue!;
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: TextButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            formKey.currentState!.save();
-                            initiateSignUp(context, ref);
-                          }
-                        },
-                        child: Text(
-                          "Sign Up",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        )),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      GoRouter.of(context).go("/signIn");
-                    },
-                    child: Text(
-                      "Already have an account? Sign In",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          fontSize: mq(context, 20),
-                          decoration: TextDecoration.underline),
+    return SafeArea(
+      child: Scaffold(
+        body: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Container(
+              color: appBackgroundColor,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              padding: EdgeInsets.all(mq(context, 20)),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Image.asset(
+                      "assets/logonocaption.png",
+                      height: mq(context, 150),
                     ),
-                  ),
-                ]),
+                    Column(
+                      children: [
+                        Text(
+                          "Sign Up",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        SizedBox(
+                          height: mq(context, 10),
+                        ),
+                        Text(
+                          "Unlock rapid fast payments in just a few steps!",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(fontSize: mq(context, 20)),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: mq(context, 20),
+                              vertical: mq(context, 10)),
+                          child: TextFormField(
+                            style: Theme.of(context).textTheme.titleMedium,
+                            decoration: InputDecoration(
+                                fillColor: Colors.grey.withOpacity(0.2),
+                                filled: true,
+                                label: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: mq(context, 10),
+                                    ),
+                                    Text(
+                                      "Full Name",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ],
+                                )),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Mandatory Field";
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              ref.read(signUpNameProvider.notifier).state =
+                                  newValue!;
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: mq(context, 20),
+                              vertical: mq(context, 10)),
+                          child: TextFormField(
+                            style: Theme.of(context).textTheme.titleMedium,
+                            decoration: InputDecoration(
+                                fillColor: Colors.grey.withOpacity(0.2),
+                                filled: true,
+                                label: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.email,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: mq(context, 10),
+                                    ),
+                                    Text(
+                                      "Email",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ],
+                                )),
+                            validator: (value) {
+                              if (value!.isEmpty ||
+                                  !value.contains("@") ||
+                                  !value.contains(".com")) {
+                                return "Please enter a valid email";
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              ref.read(signUpEmailProvider.notifier).state =
+                                  newValue!;
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: mq(context, 20),
+                              vertical: mq(context, 10)),
+                          child: TextFormField(
+                            obscureText: true,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            decoration: InputDecoration(
+                                fillColor: Colors.grey.withOpacity(0.2),
+                                filled: true,
+                                label: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.lock,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: mq(context, 10),
+                                    ),
+                                    Text(
+                                      "Password",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ],
+                                )),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter password";
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              ref.read(signUpPasswordProvider.notifier).state =
+                                  newValue!;
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: mq(context, 20),
+                              vertical: mq(context, 10)),
+                          child: TextFormField(
+                            keyboardType: TextInputType.phone,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            decoration: InputDecoration(
+                                fillColor: Colors.grey.withOpacity(0.2),
+                                filled: true,
+                                prefixText: "+91  ",
+                                prefixStyle:
+                                    Theme.of(context).textTheme.titleMedium,
+                                label: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.dialpad,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: mq(context, 10),
+                                    ),
+                                    Text(
+                                      "Phone Number",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ],
+                                )),
+                            validator: (value) {
+                              if (value!.length != 10 ||
+                                  int.parse(value).isNaN) {
+                                return "Please enter 10 digit mobile number";
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              ref
+                                  .read(signUpPhoneNumberProvider.notifier)
+                                  .state = newValue!;
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: mq(context, 20),
+                              vertical: mq(context, 10)),
+                          child: TextFormField(
+                            keyboardType: TextInputType.phone,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            maxLength: 4,
+                            decoration: InputDecoration(
+                                counterText: "",
+                                fillColor: Colors.grey.withOpacity(0.2),
+                                filled: true,
+                                prefixStyle:
+                                    Theme.of(context).textTheme.titleMedium,
+                                label: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.pin,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: mq(context, 10),
+                                    ),
+                                    Text(
+                                      "4-Digit-Pin",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ],
+                                )),
+                            validator: (value) {
+                              if (value!.length != 4 ||
+                                  int.parse(value).isNaN) {
+                                return "Please set a 4 digit pin";
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              ref.read(signUpPinProvider.notifier).state =
+                                  newValue!;
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: TextButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              initiateSignUp(context, ref);
+                            }
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          )),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        GoRouter.of(context).go("/signIn");
+                      },
+                      child: Text(
+                        "Already have an account? Sign In",
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontSize: mq(context, 20),
+                            decoration: TextDecoration.underline),
+                      ),
+                    ),
+                  ]),
+            ),
           ),
         ),
       ),

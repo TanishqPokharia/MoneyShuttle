@@ -24,84 +24,89 @@ class TransactionStatusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final message =
         transactionStatus ? "Payment Successful!" : "Payment Failed";
-    return Scaffold(
-      body: Container(
-        color: appBackgroundColor,
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(mq(context, 20)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
-              child: Text(
-                receiverName,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
-              child: Text(
-                receiverID,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            transactionStatus
-                ? Image.asset("assets/payment_success.gif")
-                : Image.asset("assets/payment_failure.gif"),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.currency_rupee,
-                    color: Colors.white,
-                    size: mq(context, 45),
-                  ),
-                  Text(
-                    amount,
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            color: appBackgroundColor,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(mq(context, 20)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
+                  child: Text(
+                    receiverName,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: mq(context, 30)),
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
-              child: TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).go("/home/payment");
-                  },
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
                   child: Text(
-                    "Make another payment",
+                    receiverID,
                     style: Theme.of(context).textTheme.titleMedium,
-                  )),
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
-              child: TextButton(
-                  style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.indigo)),
-                  onPressed: () {
-                    GoRouter.of(context).go("/home");
-                  },
+                  ),
+                ),
+                transactionStatus
+                    ? Image.asset("assets/payment_success.gif")
+                    : Image.asset("assets/payment_failure.gif"),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.currency_rupee,
+                        color: Colors.white,
+                        size: mq(context, 45),
+                      ),
+                      Text(
+                        amount,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 30)),
                   child: Text(
-                    "Go Back",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  )),
+                    message,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
+                  child: TextButton(
+                      onPressed: () {
+                        GoRouter.of(context).go("/home/payment");
+                      },
+                      child: Text(
+                        "Make another payment",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      )),
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
+                  child: TextButton(
+                      style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Colors.indigo)),
+                      onPressed: () {
+                        GoRouter.of(context).go("/home");
+                      },
+                      child: Text(
+                        "Go Back",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      )),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -19,7 +19,40 @@ class TransactionHistoryCard extends StatelessWidget {
     // TODO: implement build
     return GestureDetector(
       onTap: () {
-        print(DateTime.now().toLocal());
+        print(transactionHistory.note);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                padding: EdgeInsets.all(mq(context, 10)),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(mq(context, 10))),
+                height: mq(context, 400),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Note",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.black),
+                      ),
+                      Text(
+                        transactionHistory.note,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.black),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
       },
       child: Container(
         margin: EdgeInsets.all(mq(context, 10)),

@@ -25,6 +25,20 @@ class PaymentCategory {
       PaymentCategory(title: "Shopping", color: Colors.purple);
   static PaymentCategory others =
       PaymentCategory(title: "Others", color: Colors.grey);
+
+  static List<PaymentCategory> list = [
+    PaymentCategory.leisure,
+    PaymentCategory.entertainment,
+    PaymentCategory.grocery,
+    PaymentCategory.food,
+    PaymentCategory.medicine,
+    PaymentCategory.stationary,
+    PaymentCategory.travel,
+    PaymentCategory.electronics,
+    PaymentCategory.bill,
+    PaymentCategory.shopping,
+    PaymentCategory.others
+  ];
   static Color getColorByTitle(String title) {
     switch (title.toLowerCase()) {
       case 'leisure':

@@ -28,189 +28,194 @@ class TransactionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userData =
         ref.watch(userDataProvider(FirebaseAuth.instance.currentUser));
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          "Transaction",
-          style: Theme.of(context).textTheme.titleLarge,
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(
+            "Transaction",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          backgroundColor: appBackgroundColor,
+          iconTheme: IconThemeData(color: Colors.white),
         ),
-        backgroundColor: appBackgroundColor,
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-      body: Form(
-        key: formKey,
-        child: Container(
-          color: appBackgroundColor,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.all(mq(context, 20)),
-                  child: Text(
-                    "Sending payment to:\n${cashSwiftUser.name}",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleMedium,
+        body: Form(
+          key: formKey,
+          child: Container(
+            color: appBackgroundColor,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(mq(context, 20)),
+                    child: Text(
+                      "Sending payment to:\n${cashSwiftUser.name}",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                Text(cashSwiftUser.phoneNumber!,
-                    style: Theme.of(context).textTheme.titleMedium),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(
-                      horizontal: mq(context, 150), vertical: mq(context, 40)),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == "0") {
-                        return "Invalid Amount";
-                      }
-                      try {
-                        double.parse(value!);
-                      } catch (error) {
-                        return "Enter valid amount";
-                      }
-                      return null;
-                    },
-                    onSaved: (newValue) {
-                      ref.read(paymentAmountProvider.notifier).state =
-                          newValue!;
-                    },
-                    keyboardType: TextInputType.number,
-                    style: Theme.of(context).textTheme.titleLarge,
-                    decoration: const InputDecoration(
-                        hintText: "0",
-                        hintStyle: TextStyle(color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue)),
-                        border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue)),
-                        enabledBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        disabledBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        errorBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        prefixIcon: Icon(
-                          Icons.currency_rupee_sharp,
-                          color: Colors.white,
+                  Text(cashSwiftUser.phoneNumber!,
+                      style: Theme.of(context).textTheme.titleMedium),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(
+                        horizontal: mq(context, 150),
+                        vertical: mq(context, 40)),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "0") {
+                          return "Invalid Amount";
+                        }
+                        try {
+                          double.parse(value!);
+                        } catch (error) {
+                          return "Enter valid amount";
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        ref.read(paymentAmountProvider.notifier).state =
+                            newValue!;
+                      },
+                      keyboardType: TextInputType.number,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      decoration: const InputDecoration(
+                          hintText: "0",
+                          hintStyle: TextStyle(color: Colors.grey),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.lightBlue)),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.lightBlue)),
+                          enabledBorder:
+                              UnderlineInputBorder(borderSide: BorderSide.none),
+                          disabledBorder:
+                              UnderlineInputBorder(borderSide: BorderSide.none),
+                          errorBorder:
+                              UnderlineInputBorder(borderSide: BorderSide.none),
+                          prefixIcon: Icon(
+                            Icons.currency_rupee_sharp,
+                            color: Colors.white,
+                          )),
+                    ),
+                  ),
+                  ref.watch(noteProvider)
+                      ? Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: mq(context, 20)),
+                          child: TextFormField(
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Please provide a proper note";
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) {
+                                ref.watch(noteContentProvider.notifier).state =
+                                    newValue!;
+                              },
+                              style: Theme.of(context).textTheme.titleMedium,
+                              decoration: const InputDecoration(
+                                  hintText: "Add a note...",
+                                  hintStyle: TextStyle(color: Colors.grey))),
+                        )
+                      : Container(),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: mq(context, 100),
+                        vertical: mq(context, 30)),
+                    height: mq(context, 80),
+                    width: ref.watch(noteStatusProvider)
+                        ? mq(context, 220)
+                        : mq(context, 200),
+                    child: TextButton(
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.blue)),
+                        onPressed: () {
+                          ref.read(noteProvider.notifier).state =
+                              !ref.read(noteProvider.notifier).state;
+
+                          ref.read(noteStatusProvider.notifier).state =
+                              !ref.read(noteStatusProvider.notifier).state;
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              ref.watch(noteStatusProvider)
+                                  ? "Remove Note"
+                                  : "Add Note",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Icon(
+                              ref.watch(noteStatusProvider)
+                                  ? Icons.delete
+                                  : Icons.note_add,
+                              color: Colors.white,
+                            )
+                          ],
                         )),
                   ),
-                ),
-                ref.watch(noteProvider)
-                    ? Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: mq(context, 20)),
-                        child: TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Please provide a proper note";
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) {
-                              ref.watch(noteContentProvider.notifier).state =
-                                  newValue!;
-                            },
-                            style: Theme.of(context).textTheme.titleMedium,
-                            decoration: const InputDecoration(
-                                hintText: "Add a note...")),
-                      )
-                    : Container(),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: mq(context, 100), vertical: mq(context, 30)),
-                  height: mq(context, 80),
-                  width: ref.watch(noteStatusProvider)
-                      ? mq(context, 220)
-                      : mq(context, 200),
-                  child: TextButton(
-                      style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.blue)),
-                      onPressed: () {
-                        ref.read(noteProvider.notifier).state =
-                            !ref.read(noteProvider.notifier).state;
-
-                        ref.read(noteStatusProvider.notifier).state =
-                            !ref.read(noteStatusProvider.notifier).state;
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            ref.watch(noteStatusProvider)
-                                ? "Remove Note"
-                                : "Add Note",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          Icon(
-                            ref.watch(noteStatusProvider)
-                                ? Icons.delete
-                                : Icons.note_add,
-                            color: Colors.white,
-                          )
-                        ],
-                      )),
-                ),
-                Container(
-                  margin: EdgeInsets.all(mq(context, 20)),
-                  child: Wrap(
-                    spacing: mq(context, 10),
-                    runSpacing: mq(context, 20),
-                    children: ref
-                        .watch(categoryListProvider)
-                        .map((paymentCategory) => GestureDetector(
-                            onTap: () {
-                              ref
-                                  .read(categoryListProvider.notifier)
-                                  .selectCategory(paymentCategory.index);
-                            },
-                            child: CategoryWidget(paymentCategory)))
-                        .toList(),
+                  Container(
+                    margin: EdgeInsets.all(mq(context, 20)),
+                    child: Wrap(
+                      spacing: mq(context, 10),
+                      runSpacing: mq(context, 20),
+                      children: ref
+                          .watch(categoryListProvider)
+                          .map((paymentCategory) => GestureDetector(
+                              onTap: () {
+                                ref
+                                    .read(categoryListProvider.notifier)
+                                    .selectCategory(paymentCategory.index);
+                              },
+                              child: CategoryWidget(paymentCategory)))
+                          .toList(),
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(mq(context, 20)),
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                        padding: MaterialStatePropertyAll(
-                            EdgeInsets.all(mq(context, 10))),
-                        elevation: const MaterialStatePropertyAll(0),
-                        backgroundColor: const MaterialStatePropertyAll(
-                            Color.fromARGB(255, 21, 122, 204)),
-                      ),
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          formKey.currentState!.save();
+                  Container(
+                    margin: EdgeInsets.all(mq(context, 20)),
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          padding: MaterialStatePropertyAll(
+                              EdgeInsets.all(mq(context, 10))),
+                          elevation: const MaterialStatePropertyAll(0),
+                          backgroundColor: const MaterialStatePropertyAll(
+                              Color.fromARGB(255, 21, 122, 204)),
+                        ),
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            formKey.currentState!.save();
 
-                          print("Hello");
+                            print("Hello");
 
-                          final user = FirebaseAuth.instance.currentUser;
-                          final data = await FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(user!.uid)
-                              .get();
-                          final pin = data['pin'];
-                          if (context.mounted) {
-                            await validatePin(context, ref, pin);
+                            final user = FirebaseAuth.instance.currentUser;
+                            final data = await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(user!.uid)
+                                .get();
+                            final pin = data['pin'];
+                            if (context.mounted) {
+                              await validatePin(context, ref, pin);
+                            }
                           }
-                        }
-                      },
-                      child: Text(
-                        "Pay",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      )),
-                )
-              ],
+                        },
+                        child: Text(
+                          "Pay",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        )),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -324,13 +329,15 @@ class TransactionScreen extends ConsumerWidget {
                               receiverBalance! + double.parse(amount);
                           print("Transaction performed");
 
-                          //update userBalance and update the payment category count
+                          //update userBalance and update the payment category balance
                           await FirebaseFirestore.instance
                               .collection("users")
                               .doc(user.uid)
                               .update({
                             "balance": userBalance,
-                            category: userData[category] + 1
+                            category: userData[category] + double.parse(amount),
+                            "expenditure":
+                                userData['expenditure'] + double.parse(amount)
                           });
 
                           print("user balance updated");
@@ -354,8 +361,10 @@ class TransactionScreen extends ConsumerWidget {
                           final userHistory = userData['history'];
                           userHistory.insert(0, {
                             "name": cashSwiftUser.name,
+                            "balance": cashSwiftUser.balance,
                             "phoneNumber": cashSwiftUser.phoneNumber,
                             "CSid": cashSwiftUser.id,
+                            "note": ref.read(noteContentProvider),
                             "amount": "-$amount",
                             "category": category,
                             "time":
@@ -381,6 +390,7 @@ class TransactionScreen extends ConsumerWidget {
                           receiverHistory.insert(0, {
                             "name": userData['userName'],
                             "phoneNumber": userData['phoneNumber'],
+                            "note": ref.read(noteContentProvider),
                             "CSid": userData['CSid'],
                             "amount": "+$amount",
                             "category": category,

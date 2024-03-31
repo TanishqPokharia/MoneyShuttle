@@ -59,7 +59,7 @@ class CashFlowApp extends StatelessWidget {
             titleMedium: GoogleFonts.lato(
                 fontSize: mq(context, 26), color: Colors.white),
             titleLarge: GoogleFonts.lato(
-                fontSize: mq(context, 44), color: Colors.white)),
+                fontSize: mq(context, 36), color: Colors.white)),
         inputDecorationTheme: InputDecorationTheme(
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(mq(context, 5))),

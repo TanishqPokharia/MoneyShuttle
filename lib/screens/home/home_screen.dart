@@ -1,4 +1,7 @@
 import 'package:cash_swift/main.dart';
+import 'package:cash_swift/models/cash_swift_user.dart';
+import 'package:cash_swift/providers/home/cash_swift_id_provider.dart';
+import 'package:cash_swift/providers/home/cash_swift_id_verification_provider.dart';
 import 'package:cash_swift/providers/home/check_balance_provider.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,281 +25,391 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataProvider(user));
-    return Scaffold(
-      body: Container(
-        color: appBackgroundColor,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: CustomScrollView(slivers: [
-          SliverAppBar(
-            stretch: true,
-            stretchTriggerOffset: mq(context, 300),
-            title: Text("CashSwift"),
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.transparent,
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FittedBox(
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          color: appBackgroundColor,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: CustomScrollView(slivers: [
+            SliverAppBar(
+              stretch: true,
+              stretchTriggerOffset: mq(context, 300),
+              title: Text("CashSwift"),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FittedBox(
+                      child: Container(
+                        width: mq(context, 300),
+                        child: Text(
+                          "Hi,\n${user!.displayName!.split(" ").first} \t👋🏻",
+                          maxLines: 3,
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                    ),
+                    ProfilePhoto(
+                        name: user!.displayName!,
+                        nameDisplayOption: NameDisplayOptions.initials,
+                        totalWidth: mq(context, 100),
+                        cornerRadius: mq(context, 100),
+                        color: Colors.green,
+                        fontColor: Colors.white)
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: mq(context, 50),
+                      bottom: mq(context, 10),
+                      left: mq(context, 10),
+                      right: mq(context, 10)),
+                  child: Material(
+                    type: MaterialType.card,
+                    elevation: 10,
+                    color: Colors.transparent,
                     child: Container(
-                      width: mq(context, 300),
-                      child: Text(
-                        "Hi,\n${user!.displayName!.split(" ").first} \t👋🏻",
-                        maxLines: 3,
-                        textAlign: TextAlign.start,
-                        style: Theme.of(context).textTheme.titleLarge,
+                      padding: EdgeInsets.all(mq(context, 20)),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(mq(context, 10)),
+                          gradient: const LinearGradient(
+                              colors: [
+                                Colors.indigo,
+                                Colors.deepPurple,
+                                Colors.deepPurpleAccent
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight)),
+                      width: double.infinity,
+                      height: mq(context, 250),
+                      child: FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "CashSwift",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                ),
+                                Image.asset(
+                                  "assets/chip.png",
+                                  alignment: Alignment.centerLeft,
+                                  width: mq(context, 100),
+                                  height: mq(context, 80),
+                                ),
+                                userData.when(
+                                  loading: () => Text(
+                                    "Loading...",
+                                    style:
+                                        Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                  data: (snapshot) {
+                                    var userInfo = snapshot.data() as Map;
+                                    return Container(
+                                      child: Text(
+                                        userInfo['CSid'],
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall,
+                                      ),
+                                    );
+                                  },
+                                  error: (error, stackTrace) => Text(
+                                    "Error",
+                                    style:
+                                        Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                ),
+                                userData.when(
+                                  loading: () => Text(
+                                    "Loading...",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  data: (data) => Container(
+                                    width: mq(context, 250),
+                                    child: Text(
+                                      data['userName'],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ),
+                                  error: (error, stackTrace) => Text(
+                                    "Error",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                userData.when(
+                                  loading: () => SizedBox(
+                                      height: mq(context, 150),
+                                      width: mq(context, 150),
+                                      child: const CircularProgressIndicator()),
+                                  data: (data) => SizedBox(
+                                      height: mq(context, 150),
+                                      width: mq(context, 150),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          expandQR(context, data['CSid']);
+                                        },
+                                        child: QrImageView(
+                                          eyeStyle: const QrEyeStyle(
+                                              color: Colors.white,
+                                              eyeShape: QrEyeShape.square),
+                                          dataModuleStyle:
+                                              const QrDataModuleStyle(
+                                                  color: Colors.white,
+                                                  dataModuleShape:
+                                                      QrDataModuleShape.square),
+                                          data: data['CSid'],
+                                        ),
+                                      )),
+                                  error: (error, stackTrace) => SizedBox(
+                                      height: mq(context, 150),
+                                      width: mq(context, 150),
+                                      child: Text(
+                                        "Error loading QR",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall,
+                                      )),
+                                ),
+                                Container(
+                                  child: Text(
+                                    "QR Code",
+                                    style:
+                                        Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  ProfilePhoto(
-                      name: user!.displayName!,
-                      nameDisplayOption: NameDisplayOptions.initials,
-                      totalWidth: mq(context, 100),
-                      cornerRadius: mq(context, 100),
-                      color: Colors.green,
-                      fontColor: Colors.white)
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: mq(context, 50),
-                    bottom: mq(context, 10),
-                    left: mq(context, 10),
-                    right: mq(context, 10)),
-                child: Material(
-                  type: MaterialType.card,
-                  elevation: 10,
-                  color: Colors.transparent,
-                  child: Container(
-                    padding: EdgeInsets.all(mq(context, 20)),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(mq(context, 10)),
-                        gradient: const LinearGradient(
-                            colors: [
-                              Colors.indigo,
-                              Colors.deepPurple,
-                              Colors.deepPurpleAccent
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight)),
-                    width: double.infinity,
-                    height: mq(context, 250),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Text(
-                                "CashSwift",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
+                ),
+                FittedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      transactionHistoryCard(context),
+                      makePaymentCard(context, ref)
+                    ],
+                  ),
+                ),
+                Container(
+                  height: mq(context, 100),
+                  margin: EdgeInsets.symmetric(horizontal: mq(context, 25)),
+                  child: InkWell(
+                    onTap: () {
+                      try {
+                        userData.whenData(
+                          (value) =>
+                              askPinToCheckBalance(context, ref, value['pin']),
+                        );
+                      } on Exception catch (_) {
+                        // TODO
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Unable to fetch balance")));
+                      }
+                    },
+                    child: FittedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Check Account Balance",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          Icon(
+                            Icons.arrow_right,
+                            color: Colors.white,
+                            size: mq(context, 40),
+                          ),
+                          userData.when(
+                            loading: () => Text(
+                              "Fetching...",
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
-                            Image.asset(
-                              "assets/chip.png",
-                              alignment: Alignment.centerLeft,
-                              width: mq(context, 100),
-                              height: mq(context, 80),
-                            ),
-                            userData.when(
-                              loading: () => Text(
-                                "Loading...",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                              data: (snapshot) {
-                                var userInfo = snapshot.data() as Map;
-                                return Container(
-                                  child: Text(
-                                    userInfo['CSid'],
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall,
-                                  ),
-                                );
-                              },
-                              error: (error, stackTrace) => Text(
-                                "Error",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                            ),
-                            userData.when(
-                              loading: () => Text(
-                                "Loading...",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              data: (data) => Container(
-                                width: mq(context, 250),
-                                child: Text(
-                                  data['userName'],
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
+                            data: (data) => AnimatedOpacity(
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.easeOutSine,
+                              opacity: ref.watch(checkBalanceProvider) ? 1 : 0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  ref
+                                          .read(checkBalanceProvider.notifier)
+                                          .state =
+                                      !ref
+                                          .read(checkBalanceProvider.notifier)
+                                          .state;
+                                },
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.currency_rupee_sharp,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      data['balance'].toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    )
+                                  ],
                                 ),
                               ),
-                              error: (error, stackTrace) => Text(
-                                "Error",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            userData.when(
-                              loading: () => SizedBox(
-                                  height: mq(context, 150),
-                                  width: mq(context, 150),
-                                  child: CircularProgressIndicator()),
-                              data: (data) => SizedBox(
-                                  height: mq(context, 150),
-                                  width: mq(context, 150),
-                                  child: QrImageView(
-                                    eyeStyle: const QrEyeStyle(
-                                        color: Colors.white,
-                                        eyeShape: QrEyeShape.square),
-                                    dataModuleStyle: const QrDataModuleStyle(
-                                        color: Colors.white,
-                                        dataModuleShape:
-                                            QrDataModuleShape.square),
-                                    data: data['CSid'],
-                                  )),
-                              error: (error, stackTrace) => SizedBox(
-                                  height: mq(context, 150),
-                                  width: mq(context, 150),
-                                  child: Text(
-                                    "Error loading QR",
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall,
-                                  )),
                             ),
-                            Container(
-                              child: Text(
-                                "QR Code",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
+                            error: (error, stackTrace) => Text(
+                              "Error",
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              FittedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    transactionHistoryCard(context),
-                    makePaymentCard(context)
-                  ],
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: mq(context, 20), vertical: mq(context, 30)),
+                  child: Text(
+                    "Recent Transactions",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
-              ),
-              Container(
-                height: mq(context, 100),
-                margin: EdgeInsets.symmetric(horizontal: mq(context, 25)),
-                child: InkWell(
-                  onTap: () {
-                    try {
-                      userData.whenData(
-                        (value) =>
-                            askPinToCheckBalance(context, ref, value['pin']),
-                      );
-                    } on Exception catch (_) {
-                      // TODO
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Unable to fetch balance")));
-                    }
-                  },
-                  child: FittedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Check Account Balance",
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: mq(context, 30)),
+                  child: userData.when(
+                    loading: () => SizedBox.square(
+                        dimension: mq(context, 20),
+                        child: const CircularProgressIndicator()),
+                    data: (data) {
+                      final List history = data['history'];
+                      if (history.isNotEmpty) {
+                        return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ...history.take(3).map((e) => GestureDetector(
+                                    onTap: () {
+                                      GoRouter.of(context).go(
+                                          "/home/payment/transaction",
+                                          extra: CashSwiftUser(
+                                              name: e['name'],
+                                              id: e['CSid'],
+                                              balance: e['balance'].toDouble(),
+                                              phoneNumber: e['phoneNumber']));
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ProfilePhoto(
+                                            name: e['name'],
+                                            nameDisplayOption:
+                                                NameDisplayOptions.initials,
+                                            totalWidth: mq(context, 100),
+                                            cornerRadius: mq(context, 100),
+                                            color: Colors.indigo,
+                                            fontColor: Colors.white),
+                                        SizedBox(
+                                          width: mq(context, 150),
+                                          child: Text(
+                                            e['name'].split(" ").first,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                            ]);
+                      } else {
+                        return Text(
+                          "No past transactions",
                           style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Icon(
-                          Icons.arrow_right,
-                          color: Colors.white,
-                          size: mq(context, 40),
-                        ),
-                        userData.when(
-                          loading: () => Text(
-                            "Fetching...",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          data: (data) => AnimatedOpacity(
-                            duration: const Duration(seconds: 1),
-                            curve: Curves.easeOutSine,
-                            opacity: ref.watch(checkBalanceProvider) ? 1 : 0,
-                            child: GestureDetector(
-                              onTap: () {
-                                ref.read(checkBalanceProvider.notifier).state =
-                                    !ref
-                                        .read(checkBalanceProvider.notifier)
-                                        .state;
-                              },
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.currency_rupee_sharp,
-                                    color: Colors.white,
-                                  ),
-                                  Text(
-                                    data['balance'].toString(),
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          error: (error, stackTrace) => Text(
-                            "Error",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        )
-                      ],
+                        );
+                      }
+                    },
+                    error: (error, stackTrace) => Text(
+                      "Error fetching transactions",
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.all(mq(context, 20)),
-                child: Text(
-                  "Recent Transactions",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: mq(context, 20)),
-                child: TextButton(
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(Colors.indigo)),
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                      GoRouter.of(context).go("/signUp");
-                    },
-                    child: Text(
-                      "Logout",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    )),
-              )
-            ]),
-          )
-        ]),
+                Container(
+                  margin: EdgeInsets.all(mq(context, 40)),
+                  child: TextButton(
+                      style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Colors.indigo)),
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        GoRouter.of(context).go("/signUp");
+                      },
+                      child: Text(
+                        "Logout",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      )),
+                )
+              ]),
+            )
+          ]),
+        ),
       ),
     );
   }
 
-  askPinToCheckBalance(BuildContext context, WidgetRef ref, String pin) {
+  void expandQR(BuildContext context, qrData) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(mq(context, 10)),
+            height: mq(context, 400),
+            width: mq(context, 400),
+            child: QrImageView(
+              eyeStyle: const QrEyeStyle(
+                  color: Colors.black, eyeShape: QrEyeShape.square),
+              dataModuleStyle: const QrDataModuleStyle(
+                  color: Colors.black,
+                  dataModuleShape: QrDataModuleShape.square),
+              data: qrData,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void askPinToCheckBalance(BuildContext context, WidgetRef ref, String pin) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -423,7 +536,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget makePaymentCard(BuildContext context) {
+  Widget makePaymentCard(BuildContext context, WidgetRef ref) {
     return Container(
       margin: EdgeInsets.all(mq(context, 10)),
       padding: EdgeInsets.all(mq(context, 10)),
@@ -433,7 +546,7 @@ class HomeScreen extends ConsumerWidget {
         color: Colors.green,
         child: InkWell(
           onTap: () {
-            showPaymentOptions(context);
+            showPaymentOptions(context, ref);
           },
           splashColor: Colors.greenAccent,
           highlightColor: Colors.greenAccent,
@@ -470,7 +583,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void showPaymentOptions(context) {
+  void showPaymentOptions(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -478,7 +591,7 @@ class HomeScreen extends ConsumerWidget {
       enableDrag: true,
       isScrollControlled: true,
       builder: (context) {
-        return Container(
+        return SizedBox(
           width: double.infinity,
           height: mq(context, mq(context, 500)),
           child: Column(
@@ -488,20 +601,26 @@ class HomeScreen extends ConsumerWidget {
                 margin: EdgeInsets.symmetric(horizontal: mq(context, 20)),
                 width: double.infinity,
                 child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Phone Number",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    )),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: mq(context, 20)),
-                width: double.infinity,
-                child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Scan QR",
-                      style: Theme.of(context).textTheme.titleMedium,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      const Duration(seconds: 1);
+                      GoRouter.of(context).go("/home/payment");
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.phone_android,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: mq(context, 10),
+                        ),
+                        Text(
+                          "Phone Number",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
                     )),
               ),
               Container(
@@ -510,12 +629,50 @@ class HomeScreen extends ConsumerWidget {
                 child: TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Duration(seconds: 1);
-                      searchCashSwiftID(context);
+                      const Duration(seconds: 1);
+                      GoRouter.of(context).go("/home/scan");
                     },
-                    child: Text(
-                      "CashSwift ID",
-                      style: Theme.of(context).textTheme.titleMedium,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.qr_code_scanner,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: mq(context, 10),
+                        ),
+                        Text(
+                          "Scan QR",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    )),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: mq(context, 20)),
+                width: double.infinity,
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      const Duration(seconds: 1);
+                      searchCashSwiftID(context, ref);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.perm_identity,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: mq(context, 10),
+                        ),
+                        Text(
+                          "CashSwift ID",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
                     )),
               )
             ],
@@ -525,7 +682,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void searchCashSwiftID(context) {
+  void searchCashSwiftID(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       enableDrag: true,
@@ -539,7 +696,7 @@ class HomeScreen extends ConsumerWidget {
             width: double.infinity,
             height: mq(context, 650),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                     margin: EdgeInsets.all(mq(context, 20)),
@@ -549,12 +706,48 @@ class HomeScreen extends ConsumerWidget {
                           .titleMedium!
                           .copyWith(color: Colors.black),
                       decoration: InputDecoration(label: Text("CashSwift ID")),
+                      validator: (value) {
+                        if (value!.isEmpty || !value.contains("@cashswift")) {
+                          return "Invalid CashSwift ID";
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        ref.read(cashSwiftIDProvider.notifier).state =
+                            newValue!;
+                      },
                     )),
                 Container(
                     width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: mq(context, 20)),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: mq(context, 20), vertical: mq(context, 20)),
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            formKey.currentState!.save();
+                            await ref
+                                .read(cashSwiftIDVerifyProvider.notifier)
+                                .verifyCashSwiftID(
+                                    ref.read(cashSwiftIDProvider));
+                            print(ref.read(cashSwiftIDProvider));
+                            if (context.mounted) {
+                              if (ref.read(cashSwiftIDVerifyProvider) != null) {
+                                Navigator.pop(context);
+                                const Duration(milliseconds: 500);
+                                GoRouter.of(context).go(
+                                    "/home/payment/transaction",
+                                    extra: ref.read(cashSwiftIDVerifyProvider));
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content:
+                                      Text("This CashSwift ID does not exist"),
+                                  behavior: SnackBarBehavior.floating,
+                                ));
+                              }
+                            }
+                          }
+                        },
                         child: Text(
                           "Make Payment",
                           style: Theme.of(context).textTheme.titleMedium,

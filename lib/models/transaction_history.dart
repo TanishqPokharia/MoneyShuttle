@@ -7,6 +7,7 @@ class TransactionHistory {
   final PaymentCategory paymentCategory;
   final String amount;
   final String time;
+  final String note;
   final int date;
   final int month;
   final int year;
@@ -17,6 +18,7 @@ class TransactionHistory {
       required this.amount,
       required this.time,
       required this.date,
+      required this.note,
       required this.month,
       required this.year});
   Icon get categoryIcon {

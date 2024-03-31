@@ -56,6 +56,7 @@ class UserAuthentication {
         "pin": pin,
         "CSid": "${email.split("@").first}@cashswift",
         "balance": 500,
+        "expenditure": 0,
         "Leisure": 0,
         "Entertainment": 0,
         "Grocery": 0,
