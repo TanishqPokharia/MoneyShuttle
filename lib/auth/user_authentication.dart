@@ -24,18 +24,26 @@ class UserAuthentication {
         });
       }
       if (context.mounted) {
+        Navigator.pop(context);
+
         GoRouter.of(context).go("/home");
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found" && context.mounted) {
+        Navigator.pop(context);
+
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("User does not exist")));
       } else if (e.code == "wrong-password" && context.mounted) {
+        Navigator.pop(context);
+
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Incorrect Password")));
       }
     } catch (e) {
       if (context.mounted) {
+        Navigator.pop(context);
+
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }

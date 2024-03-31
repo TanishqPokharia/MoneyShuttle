@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final transactionLoadingProvider = StateProvider<bool>((ref) {
+final transactionStatusProvider = StateProvider<bool>((ref) {
   return false;
 });

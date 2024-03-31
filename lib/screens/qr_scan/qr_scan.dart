@@ -1,13 +1,7 @@
-import 'dart:io';
-
 import 'package:cash_swift/main.dart';
-import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/providers/home/cash_swift_id_verification_provider.dart';
 import 'package:cash_swift/providers/qr_scan/qr_view_controller.dart';
 import 'package:cash_swift/providers/qr_scan/scan_result_provider.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -39,13 +33,14 @@ class QRScanScreenState extends ConsumerState<QRScanScreen> {
   }
 
   void onScanSuccessful() async {
+    print("success");
     if (ref.read(scanResultProvider) != null) {
       await ref
           .read(cashSwiftIDVerifyProvider.notifier)
           .verifyCashSwiftID(ref.read(scanResultProvider)!.code!);
 
       if (ref.read(cashSwiftIDVerifyProvider) != null && mounted) {
-        GoRouter.of(context).go("/home/payment/transaction",
+        GoRouter.of(context).go("/home/scan/transaction",
             extra: ref.read(cashSwiftIDVerifyProvider));
       }
     }

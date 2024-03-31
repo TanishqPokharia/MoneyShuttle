@@ -1,8 +1,11 @@
 import 'package:cash_swift/main.dart';
+import 'package:cash_swift/providers/transaction/data_providers.dart';
+import 'package:cash_swift/providers/transaction/transaction_loading_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class TransactionStatusScreen extends StatelessWidget {
+class TransactionStatusScreen extends ConsumerWidget {
   const TransactionStatusScreen(
       {super.key,
       required this.transactionStatus,
@@ -21,7 +24,7 @@ class TransactionStatusScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final message =
         transactionStatus ? "Payment Successful!" : "Payment Failed";
     return SafeArea(

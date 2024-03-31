@@ -4,6 +4,7 @@ import 'package:cash_swift/router/router_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,6 +20,8 @@ void main() async {
   NotificationServices notificationServices = NotificationServices();
   notificationServices.requestPerms();
   notificationServices.forgroundMessage();
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   runApp(const ProviderScope(child: CashFlowApp()));
 }

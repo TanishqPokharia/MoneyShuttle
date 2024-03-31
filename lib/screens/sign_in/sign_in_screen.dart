@@ -142,10 +142,7 @@ class SignInScreen extends ConsumerWidget {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               formKey.currentState!.save();
-                              final email = ref.read(signInEmailProvider);
-                              final password = ref.read(signInPasswordProvider);
-                              await UserAuthentication.signInUser(
-                                  context, email, password);
+                              initiateSignUp(context, ref);
                             }
                           },
                           child: Text(
@@ -170,5 +167,31 @@ class SignInScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  initiateSignUp(BuildContext context, WidgetRef ref) async {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          alignment: Alignment.center,
+          backgroundColor: Colors.transparent,
+          child: Container(
+              alignment: Alignment.center,
+              height: mq(context, 100),
+              child: SizedBox(
+                height: mq(context, 100),
+                width: mq(context, 100),
+                child: const CircularProgressIndicator(),
+              )),
+        );
+      },
+    );
+
+    final email = ref.read(signInEmailProvider);
+    final password = ref.read(signInPasswordProvider);
+    await UserAuthentication.signInUser(context, email, password);
   }
 }

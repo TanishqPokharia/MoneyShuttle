@@ -21,7 +21,7 @@ class CashSwiftIDNotifier extends StateNotifier<CashSwiftUser?> {
       state = CashSwiftUser(
           name: receiverData['userName'],
           id: receiverData['CSid'],
-          balance: receiverData['balance'],
+          balance: receiverData['balance'].toDouble(),
           phoneNumber: receiverData['phoneNumber']);
       print("receiver data fetched");
     }

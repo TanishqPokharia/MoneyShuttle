@@ -315,7 +315,7 @@ class HomeScreen extends ConsumerWidget {
                               ...history.take(3).map((e) => GestureDetector(
                                     onTap: () {
                                       GoRouter.of(context).go(
-                                          "/home/payment/transaction",
+                                          "/home/transaction",
                                           extra: CashSwiftUser(
                                               name: e['name'],
                                               id: e['CSid'],
@@ -351,9 +351,12 @@ class HomeScreen extends ConsumerWidget {
                                   )),
                             ]);
                       } else {
-                        return Text(
-                          "No past transactions",
-                          style: Theme.of(context).textTheme.titleMedium,
+                        return Container(
+                          margin: EdgeInsets.all(mq(context, 20)),
+                          child: Text(
+                            "No past transactions",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
                         );
                       }
                     },
@@ -364,7 +367,8 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.all(mq(context, 40)),
+                  margin: EdgeInsets.symmetric(
+                      vertical: mq(context, 80), horizontal: mq(context, 40)),
                   child: TextButton(
                       style: const ButtonStyle(
                           backgroundColor:
@@ -373,9 +377,21 @@ class HomeScreen extends ConsumerWidget {
                         FirebaseAuth.instance.signOut();
                         GoRouter.of(context).go("/signUp");
                       },
-                      child: Text(
-                        "Logout",
-                        style: Theme.of(context).textTheme.titleMedium,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: mq(context, 10),
+                          ),
+                          Text(
+                            "Logout",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ],
                       )),
                 )
               ]),
@@ -734,8 +750,7 @@ class HomeScreen extends ConsumerWidget {
                               if (ref.read(cashSwiftIDVerifyProvider) != null) {
                                 Navigator.pop(context);
                                 const Duration(milliseconds: 500);
-                                GoRouter.of(context).go(
-                                    "/home/payment/transaction",
+                                GoRouter.of(context).go("/home/transaction",
                                     extra: ref.read(cashSwiftIDVerifyProvider));
                               } else {
                                 ScaffoldMessenger.of(context)

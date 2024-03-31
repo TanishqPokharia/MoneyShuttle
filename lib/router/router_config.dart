@@ -30,36 +30,51 @@ class AppRouter {
         pageBuilder: (context, state) => MaterialPage(child: HomeScreen()),
         routes: [
           GoRoute(
-            path: "scan",
-            pageBuilder: (context, state) =>
-                const MaterialPage(child: QRScanScreen()),
+            path: "status",
+            pageBuilder: (context, state) {
+              final dynamic data = state.extra;
+              return MaterialPage(
+                  child: TransactionStatusScreen(
+                transactionStatus: data['status'],
+                amount: data['amount'],
+                receiverName: data['receiverName'],
+                receiverID: data['receiverID'],
+                receiverPhoneNumber: data['receiverPhoneNumber'],
+              ));
+            },
           ),
+          GoRoute(
+              path: "transaction",
+              pageBuilder: (context, state) {
+                final dynamic payee = state.extra;
+                return MaterialPage(child: TransactionScreen(payee));
+              },
+              routes: []),
+          GoRoute(
+              path: "scan",
+              pageBuilder: (context, state) =>
+                  const MaterialPage(child: QRScanScreen()),
+              routes: [
+                GoRoute(
+                    path: "transaction",
+                    pageBuilder: (context, state) {
+                      final dynamic payee = state.extra;
+                      return MaterialPage(child: TransactionScreen(payee));
+                    },
+                    routes: []),
+              ]),
           GoRoute(
               path: "payment",
               pageBuilder: (context, state) =>
                   MaterialPage(child: PaymentScreen()),
               routes: [
                 GoRoute(
-                  path: "transaction",
-                  pageBuilder: (context, state) {
-                    final dynamic payee = state.extra;
-                    return MaterialPage(child: TransactionScreen(payee));
-                  },
-                ),
-                GoRoute(
-                  path: "status",
-                  pageBuilder: (context, state) {
-                    final dynamic data = state.extra;
-                    return MaterialPage(
-                        child: TransactionStatusScreen(
-                      transactionStatus: data['status'],
-                      amount: data['amount'],
-                      receiverName: data['receiverName'],
-                      receiverID: data['receiverID'],
-                      receiverPhoneNumber: data['receiverPhoneNumber'],
-                    ));
-                  },
-                ),
+                    path: "transaction",
+                    pageBuilder: (context, state) {
+                      final dynamic payee = state.extra;
+                      return MaterialPage(child: TransactionScreen(payee));
+                    },
+                    routes: []),
               ]),
           GoRoute(
             path: "history",

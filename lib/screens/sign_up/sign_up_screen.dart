@@ -44,6 +44,7 @@ class SignUpScreen extends ConsumerWidget {
                         ),
                         Text(
                           "Unlock rapid fast payments in just a few steps!",
+                          textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!
@@ -176,11 +177,13 @@ class SignUpScreen extends ConsumerWidget {
                               horizontal: mq(context, 20),
                               vertical: mq(context, 10)),
                           child: TextFormField(
+                            maxLength: 10,
                             keyboardType: TextInputType.phone,
                             style: Theme.of(context).textTheme.titleMedium,
                             decoration: InputDecoration(
                                 fillColor: Colors.grey.withOpacity(0.2),
                                 filled: true,
+                                counterText: "",
                                 prefixText: "+91  ",
                                 prefixStyle:
                                     Theme.of(context).textTheme.titleMedium,
