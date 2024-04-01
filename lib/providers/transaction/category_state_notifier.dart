@@ -26,4 +26,11 @@ class CategoryState extends StateNotifier<List<IndexedPaymentCategory>> {
     });
     state = [...state];
   }
+
+  void isAnyCategorySelected() {
+    if (state.every((element) => element.isSelected == false)) {
+      state.last.isSelected = true;
+      state = [...state];
+    } 
+  }
 }

@@ -318,6 +318,10 @@ class TransactionScreen extends ConsumerWidget {
                       if (value == pin) {
                         Navigator.pop(context);
 
+                        ref
+                            .read(categoryListProvider.notifier)
+                            .isAnyCategorySelected();
+
                         try {
                           final user = FirebaseAuth.instance.currentUser;
 
@@ -335,10 +339,10 @@ class TransactionScreen extends ConsumerWidget {
                           var userBalance = userData['balance'];
                           var receiverBalance = cashSwiftUser.balance;
 
-                          if (userBalance < 0 ||
-                              userBalance < amount ||
-                              receiverBalance! < 0 ||
-                              receiverBalance < double.parse(amount)) {
+                          if (userBalance > 0 ||
+                              userBalance > amount ||
+                              receiverBalance! > 0 ||
+                              receiverBalance > double.parse(amount)) {
                             userBalance = userBalance - double.parse(amount);
                             receiverBalance =
                                 receiverBalance! + double.parse(amount);
