@@ -1,7 +1,6 @@
 import 'package:cash_swift/main.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/notification_services/notification_services.dart';
-import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:cash_swift/providers/transaction/category_list_provider.dart';
 import 'package:cash_swift/providers/transaction/data_providers.dart';
 import 'package:cash_swift/providers/transaction/note_provider.dart';
@@ -10,7 +9,6 @@ import 'package:cash_swift/widgets/category_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
@@ -27,8 +25,6 @@ class TransactionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData =
-        ref.watch(userDataProvider(FirebaseAuth.instance.currentUser));
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -340,7 +336,7 @@ class TransactionScreen extends ConsumerWidget {
                           var receiverBalance = cashSwiftUser.balance;
 
                           if (userBalance > 0 &&
-                              userBalance > amount) {
+                              userBalance > double.parse(amount)) {
                             userBalance = userBalance - double.parse(amount);
                             receiverBalance =
                                 receiverBalance! + double.parse(amount);
@@ -449,16 +445,25 @@ class TransactionScreen extends ConsumerWidget {
                             });
                           } else {
                             Navigator.pop(savedContext);
-                            ScaffoldMessenger.of(savedContext).showSnackBar(SnackBar(
+                            // FocusScope.of(context).unfocus();
+                            ScaffoldMessenger.of(savedContext)
+                                .showSnackBar(SnackBar(
+                              duration: Duration(seconds: 5),
+                              onVisible: () {
+                                FocusScope.of(savedContext).unfocus();
+                              },
                               content: Text("Insufficient Balance"),
-                              behavior: SnackBarBehavior.floating,
                             ));
                           }
                         } on Exception catch (e) {
                           // TODO
-                          print(e);
+                          print("Error $e");
+                          Navigator.pop(context);
                         } catch (e) {
-                          print(e);
+                          print(
+                            "Erroe $e",
+                          );
+                          Navigator.pop(context);
                         }
                         print("Yay");
                       }

@@ -1,6 +1,4 @@
 import 'package:cash_swift/main.dart';
-import 'package:cash_swift/providers/transaction/data_providers.dart';
-import 'package:cash_swift/providers/transaction/transaction_loading_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -85,7 +83,7 @@ class TransactionStatusScreen extends ConsumerWidget {
                   margin: EdgeInsets.symmetric(vertical: mq(context, 10)),
                   child: TextButton(
                       onPressed: () {
-                        GoRouter.of(context).go("/home/payment");
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "Make another payment",

@@ -24,7 +24,7 @@ class PaymentCategory {
   static PaymentCategory shopping =
       PaymentCategory(title: "Shopping", color: Colors.purple);
   static PaymentCategory others =
-      PaymentCategory(title: "Others", color: Colors.grey);
+      PaymentCategory(title: "Other", color: Colors.grey);
 
   static List<PaymentCategory> list = [
     PaymentCategory.leisure,

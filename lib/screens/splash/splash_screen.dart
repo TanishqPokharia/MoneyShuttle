@@ -1,7 +1,6 @@
 import 'package:cash_swift/main.dart';
 import 'package:cash_swift/notification_services/notification_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

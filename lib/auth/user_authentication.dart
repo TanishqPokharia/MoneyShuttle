@@ -75,7 +75,7 @@ class UserAuthentication {
         "Electronics": 0,
         "Bill": 0,
         "Shopping": 0,
-        "Others": 0,
+        "Other": 0,
         "history": [],
         "deviceToken": ""
       });

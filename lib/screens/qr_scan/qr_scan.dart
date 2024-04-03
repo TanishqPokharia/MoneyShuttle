@@ -68,7 +68,6 @@ class QRScanScreenState extends ConsumerState<QRScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final scanResult = ref.watch(scanResultProvider);
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(

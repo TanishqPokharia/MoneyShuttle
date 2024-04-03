@@ -1,8 +1,6 @@
 import 'package:cash_swift/data/month_list.dart';
-import 'package:cash_swift/data/weekday_list.dart';
 import 'package:cash_swift/models/transaction_history.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:profile_photo/profile_photo.dart';
 
 class TransactionHistoryCard extends StatelessWidget {
@@ -96,11 +94,17 @@ class TransactionHistoryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(transactionHistory.amount,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(color: Colors.black)),
+                    Text(
+                        "${transactionHistory.amount.substring(0, 1)} ₹${transactionHistory.amount.substring(1)}",
+                        style: transactionHistory.amount.contains("-")
+                            ? Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(color: Colors.red)
+                            : Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(color: Colors.green)),
                     transactionHistory.categoryIcon
                   ],
                 )

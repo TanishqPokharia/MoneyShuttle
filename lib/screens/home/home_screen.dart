@@ -71,8 +71,8 @@ class HomeScreen extends ConsumerWidget {
                   margin: EdgeInsets.only(
                       top: mq(context, 50),
                       bottom: mq(context, 10),
-                      left: mq(context, 10),
-                      right: mq(context, 10)),
+                      left: mq(context, 20),
+                      right: mq(context, 20)),
                   child: Material(
                     type: MaterialType.card,
                     elevation: 10,
@@ -294,9 +294,12 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: mq(context, 30)),
+                  height: mq(context, 200),
                   child: userData.when(
-                    loading: () => SizedBox.square(
-                        dimension: mq(context, 20),
+                    loading: () => Container(
+                        alignment: Alignment.center,
+                        height: mq(context, 30),
+                        width: mq(context, 30),
                         child: const CircularProgressIndicator()),
                     data: (data) {
                       final List history = data['history'];
@@ -304,38 +307,43 @@ class HomeScreen extends ConsumerWidget {
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              ...history.take(3).map((e) => GestureDetector(
-                                    onTap: () {
-                                      ref
-                                          .read(noteContentProvider.notifier)
-                                          .state = "";
-                                      ref
-                                          .read(transactionStatusProvider
-                                              .notifier)
-                                          .state = false;
-                                      ref
-                                          .read(categoryListProvider.notifier)
-                                          .resetCategories();
-                                      GoRouter.of(context).go(
-                                          "/home/transaction",
-                                          extra: CashSwiftUser(
-                                              name: e['name'],
-                                              id: e['CSid'],
-                                              balance: e['balance'].toDouble(),
-                                              phoneNumber: e['phoneNumber']));
-                                    },
+                              ...history.take(3).map((e) => Container(
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         ProfilePhoto(
-                                            name: e['name'],
-                                            nameDisplayOption:
-                                                NameDisplayOptions.initials,
-                                            totalWidth: mq(context, 100),
-                                            cornerRadius: mq(context, 100),
-                                            color: Colors.indigo,
-                                            fontColor: Colors.white),
+                                          name: e['name'],
+                                          nameDisplayOption:
+                                              NameDisplayOptions.initials,
+                                          totalWidth: mq(context, 100),
+                                          cornerRadius: mq(context, 100),
+                                          color: Colors.indigo,
+                                          fontColor: Colors.white,
+                                          onTap: () {
+                                            ref
+                                                .read(noteContentProvider
+                                                    .notifier)
+                                                .state = "";
+                                            ref
+                                                .read(transactionStatusProvider
+                                                    .notifier)
+                                                .state = false;
+                                            ref
+                                                .read(categoryListProvider
+                                                    .notifier)
+                                                .resetCategories();
+                                            GoRouter.of(context).go(
+                                                "/home/transaction",
+                                                extra: CashSwiftUser(
+                                                    name: e['name'],
+                                                    id: e['CSid'],
+                                                    balance:
+                                                        e['balance'].toDouble(),
+                                                    phoneNumber:
+                                                        e['phoneNumber']));
+                                          },
+                                        ),
                                         SizedBox(
                                           width: mq(context, 150),
                                           child: Text(
@@ -370,7 +378,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(
-                      vertical: mq(context, 80), horizontal: mq(context, 40)),
+                      vertical: mq(context, 50), horizontal: mq(context, 40)),
                   child: TextButton(
                       style: const ButtonStyle(
                           backgroundColor:

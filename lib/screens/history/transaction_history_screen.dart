@@ -1,5 +1,4 @@
 import 'package:cash_swift/main.dart';
-import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/models/payment_category.dart';
 import 'package:cash_swift/models/transaction_history.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
@@ -85,7 +84,6 @@ class TransactionHistoryScreen extends ConsumerWidget {
                     if (data['history'].isEmpty) {
                       return Container();
                     } else {
-                      final int length = data['history'].length;
                       return Column(
                         children: [
                           Container(

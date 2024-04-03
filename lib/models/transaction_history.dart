@@ -1,4 +1,3 @@
-import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/models/payment_category.dart';
 import 'package:flutter/material.dart';
 
