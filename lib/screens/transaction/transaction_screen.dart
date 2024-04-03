@@ -339,10 +339,8 @@ class TransactionScreen extends ConsumerWidget {
                           var userBalance = userData['balance'];
                           var receiverBalance = cashSwiftUser.balance;
 
-                          if (userBalance > 0 ||
-                              userBalance > amount ||
-                              receiverBalance! > 0 ||
-                              receiverBalance > double.parse(amount)) {
+                          if (userBalance > 0 &&
+                              userBalance > amount) {
                             userBalance = userBalance - double.parse(amount);
                             receiverBalance =
                                 receiverBalance! + double.parse(amount);
