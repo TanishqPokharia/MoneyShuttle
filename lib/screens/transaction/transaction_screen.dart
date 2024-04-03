@@ -451,7 +451,7 @@ class TransactionScreen extends ConsumerWidget {
                             });
                           } else {
                             Navigator.pop(savedContext);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(savedContext).showSnackBar(SnackBar(
                               content: Text("Insufficient Balance"),
                               behavior: SnackBarBehavior.floating,
                             ));
