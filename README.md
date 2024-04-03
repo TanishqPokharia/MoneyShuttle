@@ -2,6 +2,8 @@
 
 CashSwift is a payments app designed to streamline your financial transactions. With a sleek interface and robust features, managing your money has never been easier.
 
+## Try it out
+  - https://drive.google.com/drive/folders/1MpPELsSmJkWttSE17jdvnSe5C1TSleqX?usp=sharing
 ## Features 🚀
 
 ### 1. Easy Registration 📝
