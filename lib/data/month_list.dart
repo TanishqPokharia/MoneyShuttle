@@ -1,5 +1,5 @@
 final monthList = [
-  "Janudary",
+  "January",
   "February",
   "March",
   "April",

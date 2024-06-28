@@ -28,15 +28,15 @@ class PaymentCategory {
 
   static List<PaymentCategory> list = [
     PaymentCategory.leisure,
-    PaymentCategory.entertainment,
     PaymentCategory.grocery,
     PaymentCategory.food,
     PaymentCategory.medicine,
     PaymentCategory.stationary,
     PaymentCategory.travel,
     PaymentCategory.electronics,
-    PaymentCategory.bill,
     PaymentCategory.shopping,
+    PaymentCategory.entertainment,
+    PaymentCategory.bill,
     PaymentCategory.others
   ];
   static Color getColorByTitle(String title) {
@@ -61,11 +61,11 @@ class PaymentCategory {
         return const Color.fromARGB(255, 218, 198, 21);
       case 'shopping':
         return Colors.purple;
-      case 'others':
+      case 'other':
         return Colors.grey;
       default:
         // Return a default color if the title doesn't match any case
-        return Colors.black;
+        return Colors.grey.shade900;
     }
   }
 

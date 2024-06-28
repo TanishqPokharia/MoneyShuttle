@@ -1,36 +1,41 @@
+import 'package:cash_swift/extensions.dart';
 import 'package:cash_swift/models/payment_category.dart';
+import 'package:cash_swift/providers/history/pieCharHoldedProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Indicator extends StatelessWidget {
+class Indicator extends ConsumerWidget {
   final PaymentCategory paymentCategory;
+  final String percentage;
 
-  const Indicator({super.key, required this.paymentCategory});
-
-  double mq(BuildContext context, double size) {
-    return MediaQuery.of(context).size.height * (size / 1000);
-  }
+  const Indicator(
+      {super.key, required this.paymentCategory, required this.percentage});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // TODO: implement build
     return Container(
-      margin: EdgeInsets.symmetric(vertical: mq(context, 5)),
+      width: context.rSize(150),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: mq(context, 15),
-            width: mq(context, 15),
+            height: context.rSize(15),
+            width: context.rSize(15),
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               color: paymentCategory.color,
             ),
           ),
           SizedBox(
-            width: mq(context, 10),
+            width: context.rSize(10),
           ),
-          Text(paymentCategory.title,
-              style: Theme.of(context).textTheme.titleSmall)
+          Text(
+            ref.watch(pieCharHoldedProvider)
+                ? percentage
+                : paymentCategory.title,
+            style: context.textSmall,
+          )
         ],
       ),
     );

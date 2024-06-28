@@ -1,175 +1,165 @@
 import 'package:cash_swift/auth/user_authentication.dart';
-import 'package:cash_swift/main.dart';
-import 'package:cash_swift/providers/sign_in/sign_in_data_providers.dart';
+import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/providers/home/user_data_provider.dart';
+import 'package:cash_swift/themes/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SignInScreen extends ConsumerWidget {
+class SignInScreen extends HookConsumerWidget {
   SignInScreen({super.key});
-
-  double mq(BuildContext context, double size) {
-    return MediaQuery.of(context).size.height * (size / 1000);
-  }
 
   final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Scaffold(
-        body: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Container(
-              color: appBackgroundColor,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              padding: EdgeInsets.all(mq(context, 20)),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Image.asset(
-                      "assets/logonocaption.png",
-                      height: mq(context, 150),
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          "Sign In",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        SizedBox(
-                          height: mq(context, 10),
-                        ),
-                        Text(
-                          "Welcome back! Let's get you back inside",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(fontSize: mq(context, 20)),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: mq(context, 20),
-                              vertical: mq(context, 10)),
-                          child: TextFormField(
-                            style: Theme.of(context).textTheme.titleMedium,
-                            decoration: InputDecoration(
-                                fillColor: Colors.grey.withOpacity(0.2),
-                                filled: true,
-                                label: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.email,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(
-                                      width: mq(context, 10),
-                                    ),
-                                    Text(
-                                      "Email",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                  ],
-                                )),
-                            validator: (value) {
-                              if (value!.isEmpty ||
-                                  !value.contains("@") ||
-                                  !value.contains(".com")) {
-                                return "Please enter a valid email";
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) {
-                              ref.read(signInEmailProvider.notifier).state =
-                                  newValue!;
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: mq(context, 20),
-                              vertical: mq(context, 10)),
-                          child: TextFormField(
-                            obscureText: true,
-                            style: Theme.of(context).textTheme.titleMedium,
-                            decoration: InputDecoration(
-                                fillColor: Colors.grey.withOpacity(0.2),
-                                filled: true,
-                                label: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.lock,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(
-                                      width: mq(context, 10),
-                                    ),
-                                    Text(
-                                      "Password",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                  ],
-                                )),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Please enter password";
-                              }
-                              return null;
-                            },
-                            onSaved: (newValue) {
-                              ref.read(signInPasswordProvider.notifier).state =
-                                  newValue!;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextButton(
-                          onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              formKey.currentState!.save();
-                              initiateSignUp(context, ref);
-                            }
-                          },
-                          child: Text(
-                            "Sign In",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          )),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        GoRouter.of(context).go("/signUp");
-                      },
-                      child: Text(
-                        "Don't have an account? Sign Up",
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            fontSize: mq(context, 20),
-                            decoration: TextDecoration.underline),
+    final credentials =
+        useRef<Map<String, String>>({"email": "", "password": ""});
+    return Scaffold(
+      body: Form(
+        key: formKey,
+        child: SingleChildScrollView(
+          child: Container(
+            color: appBackgroundColor,
+            width: context.screenWidth,
+            height: context.screenHeight,
+            padding: EdgeInsets.all(context.rSize(20)),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Image.asset(
+                    "assets/logonocaption.png",
+                    height: context.rSize(150),
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "Sign In",
+                        style: context.textLarge,
                       ),
+                      SizedBox(
+                        height: context.rSize(10),
+                      ),
+                      Text(
+                        "Welcome back! Let's get you back inside",
+                        style: context.textSmall!
+                            .copyWith(fontSize: context.rSize(20)),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: context.rSize(20),
+                            vertical: context.rSize(10)),
+                        child: TextFormField(
+                          style: context.textMedium,
+                          decoration: InputDecoration(
+                              fillColor: Colors.grey.withOpacity(0.2),
+                              filled: true,
+                              label: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.email,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    width: context.rSize(10),
+                                  ),
+                                  Text(
+                                    "Email",
+                                    style: context.textMedium,
+                                  ),
+                                ],
+                              )),
+                          validator: (value) {
+                            if (value!.isEmpty ||
+                                !value.contains("@") ||
+                                !value.contains(".com")) {
+                              return "Please enter a valid email";
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            credentials.value['email'] = newValue!;
+                          },
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: context.rSize(20),
+                            vertical: context.rSize(10)),
+                        child: TextFormField(
+                          obscureText: true,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          decoration: InputDecoration(
+                              fillColor: Colors.grey.withOpacity(0.2),
+                              filled: true,
+                              label: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    width: context.rSize(10),
+                                  ),
+                                  Text(
+                                    "Password",
+                                    style: context.textMedium,
+                                  ),
+                                ],
+                              )),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please enter password";
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            credentials.value['password'] = newValue!;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            formKey.currentState!.save();
+                            await initiateSignUp(context, credentials.value);
+                            await ref.refresh(userDataProvider.future);
+                          }
+                        },
+                        child: Text(
+                          "Sign In",
+                          style: context.textMedium,
+                        )),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      GoRouter.of(context).go("/signUp");
+                    },
+                    child: Text(
+                      "Don't have an account? Sign Up",
+                      style: context.textSmall!.copyWith(
+                          fontSize: context.rSize(20),
+                          decoration: TextDecoration.underline),
                     ),
-                  ]),
-            ),
+                  ),
+                ]),
           ),
         ),
       ),
     );
   }
 
-  initiateSignUp(BuildContext context, WidgetRef ref) async {
+  initiateSignUp(BuildContext context, Map<String, String> credentials) async {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.5),
@@ -180,18 +170,18 @@ class SignInScreen extends ConsumerWidget {
           backgroundColor: Colors.transparent,
           child: Container(
               alignment: Alignment.center,
-              height: mq(context, 100),
+              height: context.rSize(100),
               child: SizedBox(
-                height: mq(context, 100),
-                width: mq(context, 100),
+                height: context.rSize(100),
+                width: context.rSize(100),
                 child: const CircularProgressIndicator(),
               )),
         );
       },
     );
 
-    final email = ref.read(signInEmailProvider);
-    final password = ref.read(signInPasswordProvider);
-    await UserAuthentication.signInUser(context, email, password);
+    final email = credentials['email'];
+    final password = credentials['password'];
+    await UserAuthentication.signInUser(context, email!, password!);
   }
 }

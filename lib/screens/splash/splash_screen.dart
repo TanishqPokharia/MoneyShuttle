@@ -1,5 +1,7 @@
+import 'package:cash_swift/extensions.dart';
 import 'package:cash_swift/main.dart';
 import 'package:cash_swift/notification_services/notification_services.dart';
+import 'package:cash_swift/themes/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,11 +17,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-  final User? user = FirebaseAuth.instance.currentUser;
-  double mq(BuildContext context, double size) {
-    return MediaQuery.of(context).size.height * (size / 1000);
-  }
-
+  final user = FirebaseAuth.instance.currentUser;
   NotificationServices notificationServices = NotificationServices();
 
   @override
@@ -29,32 +27,26 @@ class SplashScreenState extends State<SplashScreen> {
     notificationServices.initFirebase(context);
     Future.delayed(const Duration(seconds: 3), () {
       if (user == null) {
-        if (mounted) {
-          GoRouter.of(context).go("/signUp");
-        }
+        GoRouter.of(context).go("/signUp");
       } else {
-        if (mounted) {
-          GoRouter.of(context).go("/home");
-        }
+        GoRouter.of(context).go("/home");
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-            color: appBackgroundColor,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: Image.asset(
-                "assets/logo.png",
-                height: mq(context, 300),
-              ),
-            )),
-      ),
+    return Scaffold(
+      body: Container(
+          color: appBackgroundColor,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: Image.asset(
+              "assets/logo.png",
+              height: context.rSize(300),
+            ),
+          )),
     );
   }
 }

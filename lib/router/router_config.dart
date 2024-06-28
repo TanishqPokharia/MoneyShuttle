@@ -1,6 +1,8 @@
+import 'package:cash_swift/screens/custom_qr/custom_qr_screen.dart';
 import 'package:cash_swift/screens/history/transaction_history_screen.dart';
 import 'package:cash_swift/screens/home/home_screen.dart';
 import 'package:cash_swift/screens/payment/payment.dart';
+import 'package:cash_swift/screens/profile/profile_screen.dart';
 import 'package:cash_swift/screens/qr_scan/qr_scan.dart';
 import 'package:cash_swift/screens/sign_in/sign_in_screen.dart';
 import 'package:cash_swift/screens/sign_up/sign_up_screen.dart';
@@ -13,43 +15,88 @@ import 'package:go_router/go_router.dart';
 class AppRouter {
   static GoRouter router = GoRouter(initialLocation: "/splash", routes: [
     GoRoute(
-      path: "/splash",
-      pageBuilder: (context, state) =>
-          const MaterialPage(child: SplashScreen()),
-    ),
+        path: "/splash",
+        pageBuilder: (context, state) => MaterialPage(child: SplashScreen())),
     GoRoute(
       path: "/signUp",
-      pageBuilder: (context, state) => MaterialPage(child: SignUpScreen()),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: SignUpScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            child: child,
+            position: Tween<Offset>(begin: Offset(1, 0), end: Offset.zero)
+                .chain(CurveTween(curve: Curves.easeIn))
+                .animate(animation),
+          );
+        },
+      ),
     ),
     GoRoute(
       path: "/signIn",
-      pageBuilder: (context, state) => MaterialPage(child: SignInScreen()),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: SignInScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+              child: child,
+              position: Tween<Offset>(begin: Offset(-1, 0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeIn))
+                  .animate(animation));
+        },
+      ),
     ),
     GoRoute(
         path: "/home",
-        pageBuilder: (context, state) => MaterialPage(child: HomeScreen()),
+        pageBuilder: (context, state) => CustomTransitionPage(
+            transitionDuration: Duration(seconds: 1, milliseconds: 500),
+            key: state.pageKey,
+            child: HomeScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation,
+                    child) =>
+                SlideTransition(
+                  position: Tween<Offset>(begin: Offset(0, 1), end: Offset.zero)
+                      .chain(CurveTween(curve: Curves.fastEaseInToSlowEaseOut))
+                      .animate(animation),
+                  child: child,
+                )),
         routes: [
+          GoRoute(
+            path: "profile",
+            pageBuilder: (context, state) =>
+                MaterialPage(child: ProfileScreen()),
+          ),
+          GoRoute(
+            path: "customQR",
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: CustomQRScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      SlideTransition(
+                child: child,
+                position: Tween<Offset>(begin: Offset(1, 0), end: Offset.zero)
+                    .chain(CurveTween(curve: Curves.fastOutSlowIn))
+                    .animate(animation),
+              ),
+            ),
+          ),
           GoRoute(
             path: "status",
             pageBuilder: (context, state) {
               final dynamic data = state.extra;
               return MaterialPage(
-                  child: TransactionStatusScreen(
-                transactionStatus: data['status'],
-                amount: data['amount'],
-                receiverName: data['receiverName'],
-                receiverID: data['receiverID'],
-                receiverPhoneNumber: data['receiverPhoneNumber'],
-              ));
+                  child: TransactionStatusScreen(transactionStatus: data));
             },
           ),
           GoRoute(
-              path: "transaction",
-              pageBuilder: (context, state) {
-                final dynamic payee = state.extra;
-                return MaterialPage(child: TransactionScreen(payee));
-              },
-              routes: []),
+            path: "transaction",
+            pageBuilder: (context, state) {
+              final dynamic payee = state.extra;
+              final String amount =
+                  state.uri.queryParameters['amount'] as String;
+              return MaterialPage(child: TransactionScreen(payee, amount));
+            },
+          ),
           GoRoute(
               path: "scan",
               pageBuilder: (context, state) =>
@@ -59,27 +106,55 @@ class AppRouter {
                     path: "transaction",
                     pageBuilder: (context, state) {
                       final dynamic payee = state.extra;
-                      return MaterialPage(child: TransactionScreen(payee));
+                      final String amount =
+                          state.uri.queryParameters['amount'] as String;
+                      return MaterialPage(
+                          child: TransactionScreen(payee, amount));
                     },
                     routes: []),
               ]),
           GoRoute(
               path: "payment",
-              pageBuilder: (context, state) =>
-                  MaterialPage(child: PaymentScreen()),
+              pageBuilder: (context, state) => CustomTransitionPage(
+                    child: PaymentScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        child: child,
+                        position:
+                            Tween<Offset>(begin: Offset(1, 0), end: Offset.zero)
+                                .chain(CurveTween(curve: Curves.fastOutSlowIn))
+                                .animate(animation),
+                      );
+                    },
+                  ),
               routes: [
                 GoRoute(
                     path: "transaction",
                     pageBuilder: (context, state) {
                       final dynamic payee = state.extra;
-                      return MaterialPage(child: TransactionScreen(payee));
+                      final String amount =
+                          state.uri.queryParameters['amount'] as String;
+                      return MaterialPage(
+                          child: TransactionScreen(payee, amount));
                     },
                     routes: []),
               ]),
           GoRoute(
             path: "history",
-            pageBuilder: (context, state) =>
-                MaterialPage(child: TransactionHistoryScreen()),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: TransactionHistoryScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position:
+                      Tween<Offset>(begin: Offset(-1, 0), end: Offset.zero)
+                          .chain(CurveTween(curve: Curves.fastOutSlowIn))
+                          .animate(animation),
+                  child: child,
+                );
+              },
+            ),
           )
         ]),
   ]);

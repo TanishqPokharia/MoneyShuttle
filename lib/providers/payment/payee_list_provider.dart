@@ -14,7 +14,7 @@ class PayeeNotifier extends StateNotifier<List<CashSwiftUser>> {
     state = [];
 
     final userCollection = FirebaseFirestore.instance.collection("users");
-    final queryResult = userCollection.where("phoneNumber", isEqualTo: query);
+    final queryResult = userCollection.where("phone", isEqualTo: query);
     final payeeList = await queryResult.get();
 
     if (payeeList.docs.isNotEmpty) {
@@ -23,10 +23,11 @@ class PayeeNotifier extends StateNotifier<List<CashSwiftUser>> {
       state = [
         ...state,
         CashSwiftUser(
-            name: data['userName'],
-            id: data['CSid'],
+            email: null,
+            username: data['username'],
+            id: data['msId'],
             balance: double.parse(data['balance'].toString()),
-            phoneNumber: data['phoneNumber']),
+            phoneNumber: data['phone']),
       ];
       print(state);
     }

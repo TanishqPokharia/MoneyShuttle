@@ -6,7 +6,7 @@ class TransactionHistory {
   final PaymentCategory paymentCategory;
   final String amount;
   final String time;
-  final String note;
+  final String? note;
   final int date;
   final int month;
   final int year;
