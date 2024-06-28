@@ -134,7 +134,7 @@ class NotificationServices {
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
           "Authorization":
-              "key=AAAAPWpX-Lw:APA91bECro8FXq_SQaZ18OVHvvDDpPKKbSZA_p_B1tJC5LJyiN3GJ9X8AB2W_PpMZLx0oR08TVhveYKxTXQGGBmsRAFFx0046m2HQ6j3gNWNZT2cpcn0ccYgvXBYDDwXlBjvDzc15Kzg"
+              "key="
         },
         body: jsonEncode(userData));
 
@@ -142,7 +142,7 @@ class NotificationServices {
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
           "Authorization":
-              "key=AAAAPWpX-Lw:APA91bECro8FXq_SQaZ18OVHvvDDpPKKbSZA_p_B1tJC5LJyiN3GJ9X8AB2W_PpMZLx0oR08TVhveYKxTXQGGBmsRAFFx0046m2HQ6j3gNWNZT2cpcn0ccYgvXBYDDwXlBjvDzc15Kzg"
+              "key="
         },
         body: jsonEncode(receiverData));
   }
