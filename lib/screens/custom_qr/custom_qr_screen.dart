@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/user_data/user_data.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:cash_swift/themes/colors.dart';

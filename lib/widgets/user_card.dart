@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart' as Shine;

@@ -1,4 +1,6 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cash_swift/providers/profile/profile_photo_provider.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/user_data/user_data.dart';
 import 'package:cash_swift/models/user_history/user_history.dart';
 import 'package:cash_swift/providers/home/cash_swift_id_provider.dart';
@@ -20,6 +22,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 import 'package:profile_photo/profile_photo.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends ConsumerWidget {
   HomeScreen({super.key});
@@ -30,197 +33,241 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      drawer: AppDrawer(username: user!.displayName!),
-      appBar: AppBar(
-          title: Text("Home"),
-          leading: Builder(builder: (context) {
-            return Padding(
-              padding: EdgeInsets.only(left: context.rSize(10)),
-              child: ProfilePhoto(
-                name: user!.displayName!,
-                nameDisplayOption: NameDisplayOptions.initials,
-                outlineColor: Colors.white,
-                outlineWidth: 2,
-                totalWidth: context.rSize(50),
-                cornerRadius: context.rSize(100),
-                color: Colors.green,
-                fontColor: Colors.white,
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
+    return ref.watch(userDataProvider).when(
+          loading: () => HomeScreenLoading(),
+          error: (error, stackTrace) {
+            print(error);
+            return HomeScreenError(user: user);
+          },
+          data: (data) {
+            final userDetails =
+                UserData.fromJson(data.data() as Map<String, dynamic>);
+            return Scaffold(
+              drawer: AppDrawer(),
+              appBar: AppBar(
+                title: Text('Home'),
+                leading: Builder(
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(left: context.rSize(10)),
+                      child: ref
+                          .watch(profilePhotoProvider(userDetails.msId))
+                          .when(
+                              loading: () => Shimmer.fromColors(
+                                  baseColor: Colors.grey,
+                                  highlightColor: Colors.white,
+                                  child: ProfilePhoto(
+                                    totalWidth: context.rSize(50),
+                                    cornerRadius: context.rSize(50),
+                                    color: Colors.grey,
+                                  )),
+                              error: (error, stackTrace) {
+                                print(error);
+                                return ProfilePhoto(
+                                  totalWidth: context.rSize(50),
+                                  cornerRadius: context.rSize(50),
+                                  color: Colors.black,
+                                  fontColor: Colors.white,
+                                  name: user!.displayName!,
+                                  onTap: () =>
+                                      Scaffold.of(context).openDrawer(),
+                                );
+                              },
+                              data: (data) => ProfilePhoto(
+                                    onTap: () =>
+                                        Scaffold.of(context).openDrawer(),
+                                    totalWidth: context.rSize(50),
+                                    cornerRadius: context.rSize(50),
+                                    outlineColor: Colors.white,
+                                    outlineWidth: 1,
+                                    color: Colors.grey,
+                                    image: CachedNetworkImageProvider(data),
+                                  )),
+                    );
+                  },
+                ),
+              ),
+              body: Container(
+                color: appBackgroundColor,
+                width: double.infinity,
+                height: double.infinity,
+                child: ref.watch(userDataProvider).when(
+                      loading: () => HomeScreenLoading(),
+                      error: (error, stackTrace) {
+                        print(error);
+                        print(stackTrace);
+                        return Center(
+                          child: Text(
+                            "Oops! Looks like we ran into a problem",
+                            style: context.textMedium,
+                          ),
+                        );
+                      },
+                      data: (data) {
+                        final UserData userDetails = UserData.fromJson(
+                            data.data() as Map<String, dynamic>);
+                        () async {
+                          await ref.refresh(
+                              profilePhotoProvider(userDetails.msId).future);
+                        };
+                        print(userDetails.toString());
+                        return SingleChildScrollView(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                UserMoneyShuttleCard(
+                                  msId: userDetails.msId,
+                                  username: userDetails.username,
+                                  onPressQR: () {
+                                    expandQR(context, userDetails.msId);
+                                  },
+                                ),
+                                FittedBox(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      FeatureCard(
+                                          title: "View\nTransactions",
+                                          icon: Icons.history,
+                                          color: Colors.indigo,
+                                          splashColor: Colors.indigoAccent,
+                                          image: Image.asset(
+                                              "assets/history_cards.png"),
+                                          onTap: () async {
+                                            ref.refresh(
+                                                userDataProvider.future);
+                                            ref
+                                                .read(pieCharHoldedProvider
+                                                    .notifier)
+                                                .state = false;
+                                            GoRouter.of(context)
+                                                .go("/home/history");
+                                          }),
+                                      FeatureCard(
+                                          title: "Pay",
+                                          icon: Icons.currency_rupee_sharp,
+                                          color: Colors.green,
+                                          splashColor: Colors.greenAccent,
+                                          image: Image.asset("assets/pay.png"),
+                                          onTap: () {
+                                            ref
+                                                .read(transactionCleanUpProvider
+                                                    .notifier)
+                                                .cleanUpTransactionData(ref);
+                                            showPaymentOptions(context, ref);
+                                          })
+                                    ],
+                                  ),
+                                ),
+                                // Container(
+                                //     height: context.rSize(100),
+                                //     margin: EdgeInsets.symmetric(
+                                //         horizontal: context.rSize(25)),
+                                //     child: InkWell(
+                                //       onTap: () {
+                                //         try {
+                                //           ref
+                                //               .read(homeNotifierProvider.notifier)
+                                //               .askPinToCheckBalance(
+                                //                   context, ref, userDetails.pin);
+                                //         } on Exception catch (_) {
+                                //           // TODO
+                                //           ScaffoldMessenger.of(context)
+                                //               .showSnackBar(const SnackBar(
+                                //                   content: Text(
+                                //                       "Unable to fetch balance")));
+                                //         }
+                                //       },
+                                //       child: FittedBox(
+                                //           child: Row(
+                                //               mainAxisAlignment:
+                                //                   MainAxisAlignment.start,
+                                //               children: [
+                                //             Text(
+                                //               "Check Account Balance",
+                                //               style: context.textMedium,
+                                //             ),
+                                //             Icon(
+                                //               Icons.arrow_right,
+                                //               color: Colors.white,
+                                //               size: context.rSize(40),
+                                //             ),
+                                //             AnimatedOpacity(
+                                //               duration: const Duration(seconds: 1),
+                                //               curve: Curves.easeOutSine,
+                                //               opacity:
+                                //                   ref.watch(checkBalanceProvider)
+                                //                       ? 1
+                                //                       : 0,
+                                //               child: Row(
+                                //                 children: [
+                                //                   const Icon(
+                                //                     Icons.currency_rupee_sharp,
+                                //                     color: Colors.white,
+                                //                   ),
+                                //                   Text(
+                                //                     userDetails.balance.toString(),
+                                //                     style: context.textMedium,
+                                //                   )
+                                //                 ],
+                                //               ),
+                                //             ),
+                                //           ])),
+                                //     )),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: context.rSize(20),
+                                      vertical: context.rSize(30)),
+                                  child: Text(
+                                    "Recent Transactions",
+                                    style: context.textLarge,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: context.rSize(30)),
+                                    child: Builder(
+                                      builder: (context) {
+                                        final history = userDetails.history;
+                                        final Set<String> unqiueUsers = {};
+                                        if (history.isNotEmpty) {
+                                          return Wrap(
+                                              spacing: context.rSize(10),
+                                              runSpacing: context.rSize(10),
+                                              children: [
+                                                ...history
+                                                    .take(20)
+                                                    .where((element) =>
+                                                        unqiueUsers.add(
+                                                            element['msId']))
+                                                    .map((e) {
+                                                  final userHistory =
+                                                      UserHistory.fromJson(e);
+                                                  return RecentTransaction(
+                                                      userHistory: userHistory);
+                                                }),
+                                              ]);
+                                        } else {
+                                          return Container(
+                                            margin: EdgeInsets.all(
+                                                context.rSize(20)),
+                                            child: Text(
+                                              "No past transactions",
+                                              style: context.textMedium,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ))
+                              ]),
+                        );
+                      },
+                    ),
               ),
             );
-          })),
-      body: Container(
-        color: appBackgroundColor,
-        width: double.infinity,
-        height: double.infinity,
-        child: ref.watch(userDataProvider).when(
-              loading: () => HomeScreenLoading(),
-              error: (error, stackTrace) {
-                print(error);
-                print(stackTrace);
-                return Center(
-                  child: Text(
-                    "Oops! Looks like we ran into a problem",
-                    style: context.textMedium,
-                  ),
-                );
-              },
-              data: (data) {
-                final UserData userDetails =
-                    UserData.fromJson(data.data() as Map<String, dynamic>);
-                print(userDetails.toString());
-                return SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        UserMoneyShuttleCard(
-                          msId: userDetails.msId,
-                          username: userDetails.username,
-                          onPressQR: () {
-                            expandQR(context, userDetails.msId);
-                          },
-                        ),
-                        FittedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              FeatureCard(
-                                  title: "View\nTransactions",
-                                  icon: Icons.history,
-                                  color: Colors.indigo,
-                                  splashColor: Colors.indigoAccent,
-                                  image:
-                                      Image.asset("assets/history_cards.png"),
-                                  onTap: () async {
-                                    ref.refresh(userDataProvider.future);
-                                    ref
-                                        .read(pieCharHoldedProvider.notifier)
-                                        .state = false;
-                                    GoRouter.of(context).go("/home/history");
-                                  }),
-                              FeatureCard(
-                                  title: "Pay",
-                                  icon: Icons.currency_rupee_sharp,
-                                  color: Colors.green,
-                                  splashColor: Colors.greenAccent,
-                                  image: Image.asset("assets/pay.png"),
-                                  onTap: () {
-                                    ref
-                                        .read(
-                                            transactionCleanUpProvider.notifier)
-                                        .cleanUpTransactionData(ref);
-                                    showPaymentOptions(context, ref);
-                                  })
-                            ],
-                          ),
-                        ),
-                        // Container(
-                        //     height: context.rSize(100),
-                        //     margin: EdgeInsets.symmetric(
-                        //         horizontal: context.rSize(25)),
-                        //     child: InkWell(
-                        //       onTap: () {
-                        //         try {
-                        //           ref
-                        //               .read(homeNotifierProvider.notifier)
-                        //               .askPinToCheckBalance(
-                        //                   context, ref, userDetails.pin);
-                        //         } on Exception catch (_) {
-                        //           // TODO
-                        //           ScaffoldMessenger.of(context)
-                        //               .showSnackBar(const SnackBar(
-                        //                   content: Text(
-                        //                       "Unable to fetch balance")));
-                        //         }
-                        //       },
-                        //       child: FittedBox(
-                        //           child: Row(
-                        //               mainAxisAlignment:
-                        //                   MainAxisAlignment.start,
-                        //               children: [
-                        //             Text(
-                        //               "Check Account Balance",
-                        //               style: context.textMedium,
-                        //             ),
-                        //             Icon(
-                        //               Icons.arrow_right,
-                        //               color: Colors.white,
-                        //               size: context.rSize(40),
-                        //             ),
-                        //             AnimatedOpacity(
-                        //               duration: const Duration(seconds: 1),
-                        //               curve: Curves.easeOutSine,
-                        //               opacity:
-                        //                   ref.watch(checkBalanceProvider)
-                        //                       ? 1
-                        //                       : 0,
-                        //               child: Row(
-                        //                 children: [
-                        //                   const Icon(
-                        //                     Icons.currency_rupee_sharp,
-                        //                     color: Colors.white,
-                        //                   ),
-                        //                   Text(
-                        //                     userDetails.balance.toString(),
-                        //                     style: context.textMedium,
-                        //                   )
-                        //                 ],
-                        //               ),
-                        //             ),
-                        //           ])),
-                        //     )),
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: context.rSize(20),
-                              vertical: context.rSize(30)),
-                          child: Text(
-                            "Recent Transactions",
-                            style: context.textLarge,
-                          ),
-                        ),
-                        Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: context.rSize(30)),
-                            child: Builder(
-                              builder: (context) {
-                                final history = userDetails.history;
-                                final Set<String> unqiueUsers = {};
-                                if (history.isNotEmpty) {
-                                  return Wrap(
-                                      spacing: context.rSize(10),
-                                      runSpacing: context.rSize(10),
-                                      children: [
-                                        ...history
-                                            .take(20)
-                                            .where((element) => unqiueUsers
-                                                .add(element['msId']))
-                                            .map((e) {
-                                          final userHistory =
-                                              UserHistory.fromJson(e);
-                                          return RecentTransaction(
-                                              userHistory: userHistory);
-                                        }),
-                                      ]);
-                                } else {
-                                  return Container(
-                                    margin: EdgeInsets.all(context.rSize(20)),
-                                    child: Text(
-                                      "No past transactions",
-                                      style: context.textMedium,
-                                    ),
-                                  );
-                                }
-                              },
-                            ))
-                      ]),
-                );
-              },
-            ),
-      ),
-    );
+          },
+        );
   }
 
   void expandQR(BuildContext context, qrData) {
@@ -518,6 +565,72 @@ class HomeScreen extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class HomeScreenError extends StatelessWidget {
+  const HomeScreenError({
+    super.key,
+    required this.user,
+  });
+
+  final User? user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: appBackgroundColor,
+      drawer: AppDrawer(),
+      appBar: AppBar(
+          title: Text('Home'),
+          leading: ProfilePhoto(
+            totalWidth: context.rSize(50),
+            cornerRadius: context.rSize(50),
+            color: Colors.black,
+            fontColor: Colors.white,
+            name: user!.displayName!,
+            onTap: () => Scaffold.of(context).openDrawer(),
+          )),
+      body: Center(
+        child: Text('Oops! Something went wrong', style: context.textMedium),
+      ),
+    );
+  }
+}
+
+class HomeScreenLoading extends StatelessWidget {
+  const HomeScreenLoading({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: AppDrawer(),
+      appBar: AppBar(
+        title: Text('Home'),
+        leading: Builder(
+          builder: (context) {
+            return Padding(
+              padding: EdgeInsets.only(left: context.rSize(10)),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey,
+                highlightColor: Colors.white,
+                child: DecoratedBox(
+                  decoration: ShapeDecoration(
+                      color: Colors.white, shape: CircleBorder()),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: HomeScreenShimmer(),
+      ),
     );
   }
 }

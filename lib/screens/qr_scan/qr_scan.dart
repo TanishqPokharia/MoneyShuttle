@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/providers/qr_scan/qr_scan_notifier.dart';
 import 'package:cash_swift/providers/qr_scan/qr_view_controller.dart';
 import 'package:cash_swift/themes/colors.dart';

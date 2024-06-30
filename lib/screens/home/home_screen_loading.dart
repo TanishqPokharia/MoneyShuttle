@@ -3,8 +3,8 @@ import 'package:cash_swift/widgets/user_card.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class HomeScreenLoading extends StatelessWidget {
-  const HomeScreenLoading({
+class HomeScreenShimmer extends StatelessWidget {
+  const HomeScreenShimmer({
     super.key,
   });
 

@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/models/transaction_status.dart';
 import 'package:cash_swift/models/user_history/user_history.dart';

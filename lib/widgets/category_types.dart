@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/payment_category.dart';
 import 'package:cash_swift/widgets/pie_chart_indicator.dart';
 import 'package:flutter/material.dart';

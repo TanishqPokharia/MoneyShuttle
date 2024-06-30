@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/providers/selected_theme_provider.dart';
 import 'package:cash_swift/providers/theme_provider.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/providers/payment/payee_list_provider.dart';
 import 'package:cash_swift/themes/colors.dart';
 import 'package:cash_swift/widgets/search_user_card.dart';

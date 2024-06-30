@@ -1,9 +1,12 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cash_swift/providers/profile/profile_photo_provider.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/models/user_history/user_history.dart';
 import 'package:cash_swift/providers/home/transaction_cleanup_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:profile_photo/profile_photo.dart';
@@ -30,6 +33,15 @@ class RecentTransaction extends ConsumerWidget {
           cornerRadius: context.rSize(100),
           color: Colors.indigo,
           fontColor: Colors.white,
+          fit: BoxFit.cover,
+          image: ref.watch(profilePhotoProvider(userHistory.msId)).when(
+                loading: () => null,
+                error: (error, stackTrace) {
+                  print(error);
+                  return null;
+                },
+                data: (data) => CachedNetworkImageProvider(data),
+              ),
           onTap: () async {
             ref
                 .read(transactionCleanUpProvider.notifier)

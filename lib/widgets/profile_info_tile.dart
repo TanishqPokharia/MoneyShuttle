@@ -1,4 +1,4 @@
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 class ProfileInfoTile extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:cash_swift/auth/user_authentication.dart';
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:cash_swift/themes/colors.dart';
@@ -30,7 +30,7 @@ class SignUpScreen extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.asset(
-                    "assets/logonocaption.png",
+                    "assets/mslogo.png",
                     height: context.rSize(150),
                   ),
                   Column(

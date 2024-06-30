@@ -1,5 +1,5 @@
 import 'package:cash_swift/data/month_list.dart';
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/payment_category.dart';
 import 'package:cash_swift/models/transaction_history.dart';
 import 'package:cash_swift/models/user_history/user_history.dart';
@@ -68,15 +68,20 @@ class TransactionHistoryScreen extends ConsumerWidget {
               userData.when(
                 loading: () => CircularProgressIndicator(),
                 data: (data) {
-                  if (data['history'].isEmpty) {
-                    return Container();
+                  final paymentCategory = data.get("paymentCategory");
+                  final expenditure = data.get("expenditure");
+                  if (expenditure <= 0) {
+                    return SizedBox(
+                        height: context.rSize(400),
+                        child: Center(
+                            child: Text("No amount debited from account")));
                   } else {
-                    final paymentCategory = data.get("paymentCategory");
-                    final expenditure = data.get("expenditure");
+                    print(paymentCategory);
+                    print("Expenditure: $expenditure");
                     return Column(
                       children: [
-                        AspectRatio(
-                          aspectRatio: 1,
+                        SizedBox(
+                          height: context.rSize(400),
                           child: GestureDetector(
                             onTap: () {
                               ref.read(pieCharHoldedProvider.notifier).state =
@@ -100,10 +105,14 @@ class TransactionHistoryScreen extends ConsumerWidget {
                                             title: "",
                                             // title:
                                             //     "${(((data['paymentCategory'][category.title]) / data['expenditure']) * 100).toStringAsFixed(2)} %",
-                                            value: (data['paymentCategory']
-                                                        [category.title] *
-                                                    1.0) /
-                                                data['expenditure'],
+                                            value: (data['paymentCategory'][
+                                                                category
+                                                                    .title] *
+                                                            1.0) /
+                                                        data['expenditure'] <=
+                                                    0
+                                                ? 1
+                                                : data['expenditure'],
                                             titleStyle: context.textSmall!
                                                 .copyWith(
                                                     fontSize:

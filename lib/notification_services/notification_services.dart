@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_settings/app_settings.dart';
+import 'package:cash_swift/utils/constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -51,7 +52,7 @@ class NotificationServices {
   Future<void> showNotification(RemoteMessage message) async {
     AndroidNotificationChannel androidNotificationChannel =
         AndroidNotificationChannel(
-            "CashSwiftChannelID", "High Importance Notification",
+            "MoneyShuttleChannelID", "High Importance Notification",
             importance: Importance.high);
 
     AndroidNotificationDetails androidNotificationDetails =
@@ -115,34 +116,35 @@ class NotificationServices {
     final userData = {
       "to": userToken,
       "priority": "high",
-      "notification": {"title": "CashSwift", "body": userNotificationBody},
+      "notification": {"title": "Money Shuttle", "body": userNotificationBody},
       "android": {
-        "notification": {"channel_id": "CashSwiftChannelID"}
+        "notification": {"channel_id": "MoneyShuttleChannelID"}
       }
     };
 
     final receiverData = {
       "to": receiverToken,
       "priority": "high",
-      "notification": {"title": "CashSwift", "body": receiverNotificationBody},
+      "notification": {
+        "title": "Money Shuttle",
+        "body": receiverNotificationBody
+      },
       "android": {
-        "notification": {"channel_id": "CashSwiftChannelID"}
+        "notification": {"channel_id": "MoneyShuttleChannelID"}
       }
     };
 
     await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
-          "Authorization":
-              "key=AAAAPWpX-Lw:APA91bECro8FXq_SQaZ18OVHvvDDpPKKbSZA_p_B1tJC5LJyiN3GJ9X8AB2W_PpMZLx0oR08TVhveYKxTXQGGBmsRAFFx0046m2HQ6j3gNWNZT2cpcn0ccYgvXBYDDwXlBjvDzc15Kzg"
+          "Authorization": "key=$notificationKey"
         },
         body: jsonEncode(userData));
 
     await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
         headers: {
           "Content-Type": "application/json; charset=UTF-8",
-          "Authorization":
-              "key=AAAAPWpX-Lw:APA91bECro8FXq_SQaZ18OVHvvDDpPKKbSZA_p_B1tJC5LJyiN3GJ9X8AB2W_PpMZLx0oR08TVhveYKxTXQGGBmsRAFFx0046m2HQ6j3gNWNZT2cpcn0ccYgvXBYDDwXlBjvDzc15Kzg"
+          "Authorization": "key=$notificationKey"
         },
         body: jsonEncode(receiverData));
   }

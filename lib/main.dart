@@ -36,7 +36,7 @@ class CashSwiftApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
-      title: 'CashSwift',
+      title: 'Money Shuttle',
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
       themeMode: ref.watch(themeProvider).maybeWhen(

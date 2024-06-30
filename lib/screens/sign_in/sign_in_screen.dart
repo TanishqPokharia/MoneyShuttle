@@ -1,5 +1,6 @@
 import 'package:cash_swift/auth/user_authentication.dart';
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/providers/profile/profile_photo_provider.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:cash_swift/themes/colors.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +30,8 @@ class SignInScreen extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.asset(
-                    "assets/logonocaption.png",
-                    height: context.rSize(150),
+                    "assets/mslogo.png",
+                    height: context.rSize(250),
                   ),
                   Column(
                     children: [

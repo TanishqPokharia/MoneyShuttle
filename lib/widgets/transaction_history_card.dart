@@ -1,5 +1,5 @@
 import 'package:cash_swift/data/month_list.dart';
-import 'package:cash_swift/extensions.dart';
+import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/transaction_history.dart';
 import 'package:cash_swift/themes/colors.dart';
 import 'package:flutter/material.dart';
