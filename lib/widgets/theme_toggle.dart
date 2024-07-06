@@ -20,12 +20,15 @@ class ThemeToggle extends ConsumerWidget {
           previousChildren.clear();
           return currentChild!;
         },
-        duration: Duration(seconds: 2),
-        transitionBuilder: (child, animation) => RotationTransition(
-              turns: Tween<double>(begin: 0, end: 1)
-                  .chain(CurveTween(curve: Curves.linear))
-                  .animate(animation),
-              child: child,
+        duration: Duration(milliseconds: 500),
+        transitionBuilder: (child, animation) => SizeTransition(
+              sizeFactor: Tween<double>(begin: 0, end: 1).animate(animation),
+              child: FadeTransition(
+                opacity: Tween<double>(begin: 0, end: 1)
+                    .chain(CurveTween(curve: Curves.linear))
+                    .animate(animation),
+                child: child,
+              ),
             ),
         child: themeModeList[ref.watch(selectedThemeProvider).maybeWhen(
               data: (data) => data,
@@ -68,7 +71,7 @@ class LightToggle extends ConsumerWidget {
           ref.refresh(selectedThemeProvider.future);
         },
         icon: Icon(CupertinoIcons.sun_max_fill,
-            color: Colors.yellow, size: context.rSize(100)));
+            color: Colors.yellow.shade900, size: context.rSize(100)));
   }
 }
 

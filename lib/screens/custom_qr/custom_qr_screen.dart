@@ -16,7 +16,7 @@ class CustomQRScreen extends HookConsumerWidget {
     final amountHook = useState<int>(0);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: appBackgroundColor,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text("Custom QR"),
       ),
@@ -69,6 +69,8 @@ class CustomQRScreen extends HookConsumerWidget {
                               disabledBorder: InputBorder.none,
                               enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey)),
+                              errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red)),
                               prefixIcon: Icon(
                                 Icons.currency_rupee_sharp,
                                 color: Colors.white,

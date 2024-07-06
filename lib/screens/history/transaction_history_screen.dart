@@ -6,9 +6,8 @@ import 'package:cash_swift/models/user_history/user_history.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:cash_swift/providers/history/pieCharHoldedProvider.dart';
 import 'package:cash_swift/providers/history/transactionsFilterProvider.dart';
-import 'package:cash_swift/themes/colors.dart';
 import 'package:cash_swift/widgets/category_types.dart';
-import 'package:cash_swift/widgets/transaction_history_card.dart';
+import 'package:cash_swift/widgets/transaction_history_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,10 +28,9 @@ class TransactionHistoryScreen extends ConsumerWidget {
           "History",
           style: context.textLarge,
         ),
-        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(
-        color: appBackgroundColor,
+        color: context.backgroundColor,
         height: context.screenHeight,
         width: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -74,7 +72,8 @@ class TransactionHistoryScreen extends ConsumerWidget {
                     return SizedBox(
                         height: context.rSize(400),
                         child: Center(
-                            child: Text("No amount debited from account")));
+                            child: Text("No amount debited from account",
+                                style: context.textSmall)));
                   } else {
                     print(paymentCategory);
                     print("Expenditure: $expenditure");
@@ -105,14 +104,12 @@ class TransactionHistoryScreen extends ConsumerWidget {
                                             title: "",
                                             // title:
                                             //     "${(((data['paymentCategory'][category.title]) / data['expenditure']) * 100).toStringAsFixed(2)} %",
-                                            value: (data['paymentCategory'][
-                                                                category
-                                                                    .title] *
-                                                            1.0) /
-                                                        data['expenditure'] <=
-                                                    0
-                                                ? 1
-                                                : data['expenditure'],
+                                            value: (data['paymentCategory']
+                                                        [category.title] *
+                                                    1.0) /
+                                                (data['expenditure'] <= 0
+                                                    ? 1
+                                                    : data['expenditure']),
                                             titleStyle: context.textSmall!
                                                 .copyWith(
                                                     fontSize:
@@ -209,17 +206,12 @@ class TransactionHistoryScreen extends ConsumerWidget {
                                 UserHistory.fromJson(transactionHistory[index]);
                             return TransactionHistoryTile(
                               transactionHistory: TransactionHistory(
-                                  name: userHistory.username,
-                                  amount: userHistory.amount,
-                                  paymentCategory: PaymentCategory(
-                                      title: userHistory.category,
-                                      color: PaymentCategory.getColorByTitle(
-                                          userHistory.category)),
-                                  note: userHistory.note,
-                                  time: userHistory.time,
-                                  month: userHistory.month,
-                                  year: userHistory.year,
-                                  date: userHistory.date),
+                                userHistory: userHistory,
+                                paymentCategory: PaymentCategory(
+                                    title: userHistory.category,
+                                    color: PaymentCategory.getColorByTitle(
+                                        userHistory.category)),
+                              ),
                             );
                           },
                         ),

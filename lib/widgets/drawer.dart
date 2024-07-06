@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cash_swift/models/payment_category.dart';
+import 'package:cash_swift/models/transaction_history.dart';
 import 'package:cash_swift/models/user_data/user_data.dart';
-import 'package:cash_swift/providers/home/check_balance_provider.dart';
+import 'package:cash_swift/models/user_history/user_history.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
 import 'package:cash_swift/providers/profile/profile_photo_provider.dart';
-import 'package:cash_swift/router/router_config.dart';
 import 'package:cash_swift/utils/extensions.dart';
-import 'package:cash_swift/widgets/loading_rocket.dart';
+import 'package:cash_swift/widgets/procesiing_transaction.dart';
 import 'package:cash_swift/widgets/theme_toggle.dart';
 import 'package:cash_swift/widgets/verify_pin.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +22,7 @@ class AppDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: context.theme.drawerTheme.backgroundColor,
         child: ref.watch(userDataProvider).when(
               loading: () => Center(
                 child: CircularProgressIndicator(),
@@ -100,7 +101,7 @@ class AppDrawer extends ConsumerWidget {
                       },
                       leading: Icon(
                         CupertinoIcons.profile_circled,
-                        color: Colors.white,
+                        color: context.iconColor,
                       ),
                       title: Text("Profile", style: context.textMedium),
                     ),
@@ -111,15 +112,36 @@ class AppDrawer extends ConsumerWidget {
                           builder: (context) => VerifyPin(
                             pin: userDetails.pin,
                             onPinVerified: () {
-                              Navigator.popUntil(
-                                  context, (route) => route.isFirst);
+                              final List<dynamic> transactionHistoryList = [];
+                              for (int i = 0;
+                                  i < userDetails.history.length &&
+                                      transactionHistoryList.length < 5;
+                                  i++) {
+                                if (userDetails.history[i]['amount']
+                                    .contains("-"))
+                                  transactionHistoryList
+                                      .add(userDetails.history[i]);
+                              }
+
+                              Navigator.pop(context);
+                              GoRouter.of(context).push(
+                                  "/home/balance/${userDetails.balance.toString()}",
+                                  extra: transactionHistoryList
+                                      .map((e) => TransactionHistory(
+                                          userHistory: UserHistory.fromJson(e),
+                                          paymentCategory: PaymentCategory(
+                                              title: e['category'],
+                                              color: PaymentCategory
+                                                  .getColorByTitle(
+                                                      e['category']))))
+                                      .toList());
                             },
                           ),
                         );
                       },
                       leading: Icon(
                         Icons.account_balance,
-                        color: Colors.white,
+                        color: context.iconColor,
                       ),
                       title: Text("Check Balance", style: context.textMedium),
                     ),
@@ -127,7 +149,7 @@ class AppDrawer extends ConsumerWidget {
                       onTap: () {},
                       leading: Icon(
                         Icons.draw,
-                        color: Colors.white,
+                        color: context.iconColor,
                       ),
                       title: Text("Customize", style: context.textMedium),
                     ),
@@ -135,10 +157,14 @@ class AppDrawer extends ConsumerWidget {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (context) => LoadingRocket(),
+                          barrierDismissible: false,
+                          builder: (context) => ProcessingTransaction(),
                         );
                       },
-                      leading: Icon(Icons.settings, color: Colors.white),
+                      leading: Icon(
+                        Icons.settings,
+                        color: context.iconColor,
+                      ),
                       title: Text(
                         "Settings",
                         style: context.textMedium,

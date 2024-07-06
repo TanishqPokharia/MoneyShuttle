@@ -1,7 +1,6 @@
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/providers/qr_scan/qr_scan_notifier.dart';
 import 'package:cash_swift/providers/qr_scan/qr_view_controller.dart';
-import 'package:cash_swift/themes/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -37,7 +36,6 @@ class QRScanScreenState extends ConsumerState<QRScanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: appBackgroundColor,
           iconTheme: IconThemeData(color: Colors.white),
           title: Text(
             "Scan QR",
@@ -45,7 +43,7 @@ class QRScanScreenState extends ConsumerState<QRScanScreen> {
           ),
         ),
         body: Container(
-          color: appBackgroundColor,
+          color: context.backgroundColor,
           width: context.screenWidth,
           height: context.screenHeight,
           child: Column(
@@ -57,7 +55,7 @@ class QRScanScreenState extends ConsumerState<QRScanScreen> {
                   onQRViewCreated: (controller) {
                     ref
                         .read(qrScanNotifierProvider.notifier)
-                        .onQrViewCreated(controller, ref);
+                        .onQrViewCreated(context, controller, ref);
                   },
                   formatsAllowed: [BarcodeFormat.qrcode],
                   overlay: QrScannerOverlayShape(

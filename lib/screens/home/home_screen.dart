@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cash_swift/providers/profile/profile_photo_provider.dart';
+import 'package:cash_swift/screens/home/home_screen_error.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/user_data/user_data.dart';
 import 'package:cash_swift/models/user_history/user_history.dart';
@@ -88,7 +89,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               body: Container(
-                color: appBackgroundColor,
+                color: context.backgroundColor,
                 width: double.infinity,
                 height: double.infinity,
                 child: ref.watch(userDataProvider).when(
@@ -273,7 +274,7 @@ class HomeScreen extends ConsumerWidget {
   void expandQR(BuildContext context, qrData) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: appBackgroundColor,
+      backgroundColor: context.backgroundColor,
       showDragHandle: true,
       builder: (context) {
         return Container(
@@ -291,7 +292,7 @@ class HomeScreen extends ConsumerWidget {
                   dataModuleStyle: const QrDataModuleStyle(
                       color: Colors.black,
                       dataModuleShape: QrDataModuleShape.square),
-                  data: qrData,
+                  data: "/$qrData",
                 ),
                 Container(
                   width: double.infinity,
@@ -391,11 +392,12 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void searchCashSwiftID(BuildContext context, WidgetRef ref) {
+  void searchMoneyShuttleID(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       enableDrag: true,
       showDragHandle: true,
+      backgroundColor: context.backgroundColor,
       barrierColor: Colors.black.withOpacity(0.5),
       isScrollControlled: true,
       builder: (context) {
@@ -410,11 +412,12 @@ class HomeScreen extends ConsumerWidget {
                 Container(
                     margin: EdgeInsets.all(context.rSize(20)),
                     child: TextFormField(
-                      style: context.textMedium!.copyWith(color: Colors.black),
-                      decoration: InputDecoration(label: Text("CashSwift ID")),
+                      style: context.textMedium!,
+                      decoration:
+                          InputDecoration(label: Text("Money Shuttle ID")),
                       validator: (value) {
-                        if (value!.isEmpty || !value.contains("@cashswift")) {
-                          return "Invalid CashSwift ID";
+                        if (value!.isEmpty || !value.contains("@MS")) {
+                          return "Invalid ID";
                         }
                         return null;
                       },
@@ -449,8 +452,8 @@ class HomeScreen extends ConsumerWidget {
                               } else {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(const SnackBar(
-                                  content:
-                                      Text("This CashSwift ID does not exist"),
+                                  content: Text(
+                                      "This Money Shuttle ID does not exist"),
                                   behavior: SnackBarBehavior.floating,
                                 ));
                               }
@@ -474,7 +477,7 @@ class HomeScreen extends ConsumerWidget {
       context: context,
       showDragHandle: true,
       enableDrag: true,
-      backgroundColor: Colors.blueGrey.shade900,
+      backgroundColor: context.backgroundColor,
       isScrollControlled: true,
       builder: (context) {
         return SizedBox(
@@ -487,6 +490,7 @@ class HomeScreen extends ConsumerWidget {
                 margin: EdgeInsets.symmetric(horizontal: context.rSize(20)),
                 width: double.infinity,
                 child: TextButton(
+                    style: Theme.of(context).textButtonTheme.style,
                     onPressed: () {
                       Navigator.pop(context);
                       const Duration(seconds: 1);
@@ -497,14 +501,12 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         const Icon(
                           Icons.phone_android,
-                          color: Colors.white,
                         ),
                         SizedBox(
                           width: context.rSize(10),
                         ),
                         Text(
                           "Phone Number",
-                          style: context.textMedium,
                         ),
                       ],
                     )),
@@ -523,14 +525,12 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         const Icon(
                           Icons.qr_code_scanner,
-                          color: Colors.white,
                         ),
                         SizedBox(
                           width: context.rSize(10),
                         ),
                         Text(
                           "Scan QR",
-                          style: context.textMedium,
                         ),
                       ],
                     )),
@@ -542,21 +542,19 @@ class HomeScreen extends ConsumerWidget {
                     onPressed: () {
                       Navigator.pop(context);
                       const Duration(seconds: 1);
-                      searchCashSwiftID(context, ref);
+                      searchMoneyShuttleID(context, ref);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
                           Icons.perm_identity,
-                          color: Colors.white,
                         ),
                         SizedBox(
                           width: context.rSize(10),
                         ),
                         Text(
                           "CashSwift ID",
-                          style: context.textMedium,
                         ),
                       ],
                     )),
@@ -565,72 +563,6 @@ class HomeScreen extends ConsumerWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class HomeScreenError extends StatelessWidget {
-  const HomeScreenError({
-    super.key,
-    required this.user,
-  });
-
-  final User? user;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appBackgroundColor,
-      drawer: AppDrawer(),
-      appBar: AppBar(
-          title: Text('Home'),
-          leading: ProfilePhoto(
-            totalWidth: context.rSize(50),
-            cornerRadius: context.rSize(50),
-            color: Colors.black,
-            fontColor: Colors.white,
-            name: user!.displayName!,
-            onTap: () => Scaffold.of(context).openDrawer(),
-          )),
-      body: Center(
-        child: Text('Oops! Something went wrong', style: context.textMedium),
-      ),
-    );
-  }
-}
-
-class HomeScreenLoading extends StatelessWidget {
-  const HomeScreenLoading({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: AppDrawer(),
-      appBar: AppBar(
-        title: Text('Home'),
-        leading: Builder(
-          builder: (context) {
-            return Padding(
-              padding: EdgeInsets.only(left: context.rSize(10)),
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey,
-                highlightColor: Colors.white,
-                child: DecoratedBox(
-                  decoration: ShapeDecoration(
-                      color: Colors.white, shape: CircleBorder()),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: HomeScreenShimmer(),
-      ),
     );
   }
 }

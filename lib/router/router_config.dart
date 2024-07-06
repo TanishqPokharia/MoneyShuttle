@@ -1,3 +1,4 @@
+import 'package:cash_swift/screens/balance/balance_screen.dart';
 import 'package:cash_swift/screens/custom_qr/custom_qr_screen.dart';
 import 'package:cash_swift/screens/history/transaction_history_screen.dart';
 import 'package:cash_swift/screens/home/home_screen.dart';
@@ -67,6 +68,16 @@ class AppRouter {
                 MaterialPage(child: ProfileScreen()),
           ),
           GoRoute(
+            path: "balance/:balance",
+            pageBuilder: (context, state) {
+              dynamic data = state.extra;
+              final String? balance = state.pathParameters['balance'];
+              return MaterialPage(
+                  child: BalanceScreen(
+                      transactionHistoryList: data, balance: balance));
+            },
+          ),
+          GoRoute(
             path: "customQR",
             pageBuilder: (context, state) => CustomTransitionPage(
               child: CustomQRScreen(),
@@ -92,9 +103,9 @@ class AppRouter {
             path: "transaction",
             pageBuilder: (context, state) {
               final dynamic payee = state.extra;
-              final String amount =
-                  state.uri.queryParameters['amount'] as String;
-              return MaterialPage(child: TransactionScreen(payee, amount));
+              final String? amount = state.uri.queryParameters['amount'];
+              return MaterialPage(
+                  child: TransactionScreen(payee, amount ?? null));
             },
           ),
           GoRoute(
@@ -133,8 +144,8 @@ class AppRouter {
                     path: "transaction",
                     pageBuilder: (context, state) {
                       final dynamic payee = state.extra;
-                      final String amount =
-                          state.uri.queryParameters['amount'] as String;
+                      final String? amount =
+                          state.uri.queryParameters['amount'];
                       return MaterialPage(
                           child: TransactionScreen(payee, amount));
                     },

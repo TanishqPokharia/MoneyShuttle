@@ -1,4 +1,5 @@
 import 'package:cash_swift/auth/user_authentication.dart';
+import 'package:cash_swift/themes/dark.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
@@ -22,7 +23,7 @@ class SignUpScreen extends HookConsumerWidget {
         key: formKey,
         child: SingleChildScrollView(
           child: Container(
-            color: appBackgroundColor,
+            color: darkTheme(context).scaffoldBackgroundColor,
             width: context.screenWidth,
             height: context.screenHeight,
             padding: EdgeInsets.all(context.rSize(20)),

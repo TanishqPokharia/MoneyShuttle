@@ -56,7 +56,8 @@ class UserMoneyShuttleCard extends StatelessWidget {
                     Container(
                       child: Text(
                         "MoneyShuttle",
-                        style: context.textMedium,
+                        style:
+                            context.textMedium!.copyWith(color: Colors.white),
                       ),
                     ),
                     Image.asset(
@@ -67,8 +68,8 @@ class UserMoneyShuttleCard extends StatelessWidget {
                     Container(
                       child: Text(
                         msId,
-                        style: context.textSmall!
-                            .copyWith(fontSize: context.rSize(20)),
+                        style: context.textSmall!.copyWith(
+                            fontSize: context.rSize(20), color: Colors.white),
                       ),
                     ),
                     Container(
@@ -77,7 +78,8 @@ class UserMoneyShuttleCard extends StatelessWidget {
                         username,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: context.textMedium,
+                        style:
+                            context.textMedium!.copyWith(color: Colors.white),
                       ),
                     ),
                   ],
@@ -97,13 +99,13 @@ class UserMoneyShuttleCard extends StatelessWidget {
                             dataModuleStyle: const QrDataModuleStyle(
                                 color: Colors.white,
                                 dataModuleShape: QrDataModuleShape.square),
-                            data: msId,
+                            data: "/$msId",
                           ),
                         )),
                     Container(
                       child: Text(
                         "QR Code",
-                        style: context.textSmall,
+                        style: context.textSmall!.copyWith(color: Colors.white),
                       ),
                     )
                   ],

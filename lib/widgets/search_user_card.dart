@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cash_swift/providers/profile/profile_photo_provider.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/providers/home/transaction_cleanup_notifier.dart';
@@ -14,6 +16,7 @@ class SearchUserTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
+      contentPadding: EdgeInsets.all(context.rSize(20)),
       onTap: () {
         ref
             .read(transactionCleanUpProvider.notifier)
@@ -21,22 +24,27 @@ class SearchUserTile extends ConsumerWidget {
         GoRouter.of(context)
             .go("/home/payment/transaction", extra: cashSwiftUser);
       },
-      leading: Container(
-        margin: EdgeInsets.only(right: context.rSize(20)),
-        child: ProfilePhoto(
-          totalWidth: context.rSize(90),
-          cornerRadius: context.rSize(50),
-          color: Colors.purple,
-          name: cashSwiftUser.username,
-          nameDisplayOption: NameDisplayOptions.initials,
-          fontColor: Colors.white,
-        ),
+      leading: ProfilePhoto(
+        totalWidth: context.rSize(50),
+        cornerRadius: context.rSize(25),
+        color: Colors.grey,
+        name: cashSwiftUser.username,
+        nameDisplayOption: NameDisplayOptions.initials,
+        fontColor: Colors.white,
+        image: ref.watch(profilePhotoProvider(cashSwiftUser.id!)).when(
+              loading: () => null,
+              error: (error, stackTrace) {
+                print(error);
+                return null;
+              },
+              data: (data) => CachedNetworkImageProvider(data),
+            ),
       ),
       title: Text(cashSwiftUser.username,
-          style: Theme.of(context).textTheme.titleMedium),
+          style: context.textMedium!.copyWith(fontSize: context.rSize(22))),
       subtitle: Text(
-        cashSwiftUser.phoneNumber!,
-        style: Theme.of(context).textTheme.titleMedium,
+        "+91 ${cashSwiftUser.phoneNumber!}",
+        style: context.textMedium!.copyWith(fontSize: context.rSize(22)),
       ),
     );
   }

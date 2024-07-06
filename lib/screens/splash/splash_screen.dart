@@ -1,7 +1,5 @@
 import 'package:cash_swift/utils/extensions.dart';
-import 'package:cash_swift/main.dart';
 import 'package:cash_swift/notification_services/notification_services.dart';
-import 'package:cash_swift/themes/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +34,6 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: appBackgroundColor, body: Center());
+    return Scaffold(backgroundColor: context.backgroundColor, body: Center());
   }
 }

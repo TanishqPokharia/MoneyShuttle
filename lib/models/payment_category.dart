@@ -19,8 +19,8 @@ class PaymentCategory {
       PaymentCategory(title: "Travel", color: Colors.deepPurple);
   static PaymentCategory electronics =
       PaymentCategory(title: "Electronics", color: Colors.blue);
-  static PaymentCategory bill = PaymentCategory(
-      title: "Bill", color: const Color.fromARGB(255, 218, 198, 21));
+  static PaymentCategory bill =
+      PaymentCategory(title: "Bill", color: Colors.amberAccent);
   static PaymentCategory shopping =
       PaymentCategory(title: "Shopping", color: Colors.purple);
   static PaymentCategory others =
@@ -58,7 +58,7 @@ class PaymentCategory {
       case 'electronics':
         return Colors.blue;
       case 'bill':
-        return const Color.fromARGB(255, 218, 198, 21);
+        return Colors.orange;
       case 'shopping':
         return Colors.purple;
       case 'other':

@@ -1,25 +1,16 @@
 import 'package:cash_swift/models/payment_category.dart';
+import 'package:cash_swift/models/user_history/user_history.dart';
 import 'package:flutter/material.dart';
 
 class TransactionHistory {
-  final String name;
   final PaymentCategory paymentCategory;
-  final String amount;
-  final String time;
-  final String? note;
-  final int date;
-  final int month;
-  final int year;
+  final UserHistory userHistory;
 
-  TransactionHistory(
-      {required this.name,
-      required this.paymentCategory,
-      required this.amount,
-      required this.time,
-      required this.date,
-      required this.note,
-      required this.month,
-      required this.year});
+  TransactionHistory({
+    required this.userHistory,
+    required this.paymentCategory,
+  });
+
   Icon get categoryIcon {
     switch (paymentCategory.title) {
       case "Leisure":

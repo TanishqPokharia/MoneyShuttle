@@ -1,4 +1,3 @@
-import 'package:cash_swift/themes/colors.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
@@ -13,7 +12,8 @@ class VerifyPin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
-      backgroundColor: appBackgroundColor,
+      backgroundColor: context.backgroundColor,
+      insetAnimationCurve: Curves.easeIn,
       child: Column(
         children: [
           Align(

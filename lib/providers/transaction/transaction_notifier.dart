@@ -7,7 +7,7 @@ import 'package:cash_swift/providers/transaction/category_list_provider.dart';
 import 'package:cash_swift/providers/transaction/data_providers.dart';
 import 'package:cash_swift/providers/transaction/transaction_status_provider.dart';
 import 'package:cash_swift/router/router_config.dart';
-import 'package:cash_swift/widgets/loading_rocket.dart';
+import 'package:cash_swift/widgets/procesiing_transaction.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,18 +29,7 @@ class TransactionNotifier extends StateNotifier<void> {
       barrierColor: Colors.black.withOpacity(0.5),
       barrierDismissible: false,
       builder: (context) {
-        return Dialog(
-          alignment: Alignment.center,
-          backgroundColor: Colors.transparent,
-          child: Container(
-              alignment: Alignment.center,
-              height: context.rSize(100),
-              child: SizedBox(
-                height: context.rSize(100),
-                width: context.rSize(100),
-                child: CircularProgressIndicator(),
-              )),
-        );
+        return ProcessingTransaction();
       },
     );
   }
@@ -178,14 +167,8 @@ class TransactionNotifier extends StateNotifier<void> {
 
         // go to next transaction status screen
 
-        ref.watch(transactionStatusProvider.notifier).state = true;
+        ref.read(transactionStatusProvider.notifier).state = true;
         Navigator.pop(savedContext);
-        await showDialog(
-          context: savedContext,
-          builder: (context) {
-            return LoadingRocket();
-          },
-        );
 
         final transactionStatus = TransactionStatus(
             status: ref.read(transactionStatusProvider),
@@ -194,8 +177,7 @@ class TransactionNotifier extends StateNotifier<void> {
             receiverPhone: cashSwiftUser.phoneNumber,
             receiverId: cashSwiftUser.id);
 
-        GoRouter.of(savedContext)
-            .go("/home/status", extra: {transactionStatus});
+        GoRouter.of(savedContext).go("/home/status", extra: transactionStatus);
       } else {
         // handle insufficient balance error
         Navigator.pop(savedContext);

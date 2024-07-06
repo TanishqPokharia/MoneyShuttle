@@ -11,3 +11,9 @@ extension TextSizes on BuildContext {
   TextStyle? get textMedium => Theme.of(this).textTheme.titleMedium;
   TextStyle? get textLarge => Theme.of(this).textTheme.titleLarge;
 }
+
+extension ThemeExtension on BuildContext {
+  ThemeData get theme => Theme.of(this);
+  Color get backgroundColor => Theme.of(this).scaffoldBackgroundColor;
+  Color? get iconColor => Theme.of(this).iconTheme.color;
+}

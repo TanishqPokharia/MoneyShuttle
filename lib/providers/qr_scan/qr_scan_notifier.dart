@@ -2,6 +2,7 @@ import 'package:cash_swift/providers/home/cash_swift_id_verification_provider.da
 import 'package:cash_swift/providers/home/transaction_cleanup_notifier.dart';
 import 'package:cash_swift/providers/qr_scan/qr_view_controller.dart';
 import 'package:cash_swift/providers/qr_scan/scan_result_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,17 +16,19 @@ final qrScanNotifierProvider =
 class QRScanNotifier extends StateNotifier<void> {
   QRScanNotifier() : super(());
 
-  void onQrViewCreated(QRViewController controller, WidgetRef ref) {
+  void onQrViewCreated(
+      BuildContext context, QRViewController controller, WidgetRef ref) {
     ref.read(qrViewControllerProvider.notifier).state = controller;
+    print("QR scan initiated");
     controller.scannedDataStream.listen((event) {
       ref.read(scanResultProvider.notifier).state = event;
-      onScanSuccessful(ref);
+      onScanSuccessful(context, ref);
     });
   }
 
-  void onScanSuccessful(WidgetRef ref) async {
-    final context = useContext();
+  void onScanSuccessful(BuildContext context, WidgetRef ref) async {
     print("success");
+    ref.read(qrViewControllerProvider)?.stopCamera();
     if (ref.read(scanResultProvider) != null) {
       // splitting because custom qr will also contain the amount
       final String code = ref.read(scanResultProvider)!.code!;

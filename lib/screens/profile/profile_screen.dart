@@ -22,7 +22,7 @@ class ProfileScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileChanging = useState<bool>(false);
     return Scaffold(
-        backgroundColor: appBackgroundColor,
+        backgroundColor: context.backgroundColor,
         appBar: AppBar(
           title: Text('Profile'),
         ),

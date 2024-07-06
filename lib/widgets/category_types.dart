@@ -23,7 +23,7 @@ class CategoryTypes extends ConsumerWidget {
       alignment: Alignment.center,
       width: double.infinity,
       decoration: BoxDecoration(
-          color: Colors.grey.shade800,
+          color: context.theme.cardTheme.color,
           borderRadius: BorderRadius.circular(context.rSize(10))),
       child: Wrap(
         alignment: WrapAlignment.start,

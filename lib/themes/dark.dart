@@ -4,12 +4,21 @@ import 'package:google_fonts/google_fonts.dart';
 
 ThemeData darkTheme(BuildContext context) {
   return ThemeData.dark().copyWith(
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey.shade900),
+    scaffoldBackgroundColor: Colors.grey.shade900,
     appBarTheme: AppBarTheme(
-        backgroundColor: Colors.grey.shade900, foregroundColor: Colors.white),
+        elevation: 1,
+        backgroundColor: context.theme.colorScheme.onSurface,
+        foregroundColor: Colors.white),
+    drawerTheme: DrawerThemeData(backgroundColor: Colors.grey.shade900),
+    cardTheme: CardTheme(color: Colors.grey.shade800),
     textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
+            padding:
+                MaterialStatePropertyAll(EdgeInsets.all(context.rSize(12))),
             alignment: Alignment.center,
+            textStyle: MaterialStatePropertyAll(
+                GoogleFonts.lato(fontSize: context.rSize(26))),
             backgroundColor: const MaterialStatePropertyAll(
                 Color.fromARGB(255, 36, 176, 129)),
             foregroundColor: const MaterialStatePropertyAll(Colors.white),
@@ -34,5 +43,6 @@ ThemeData darkTheme(BuildContext context) {
             borderRadius: BorderRadius.circular(context.rSize(5))),
         errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(context.rSize(5)))),
+    iconTheme: IconThemeData(color: Colors.white),
   );
 }
