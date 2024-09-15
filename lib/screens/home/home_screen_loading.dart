@@ -23,7 +23,9 @@ class HomeScreenLoading extends StatelessWidget {
               child: Shimmer.fromColors(
                 baseColor: Colors.grey,
                 highlightColor: Colors.white,
-                child: DecoratedBox(
+                child: Container(
+                  height: context.rSize(50),
+                  width: context.rSize(50),
                   decoration: ShapeDecoration(
                       color: Colors.white, shape: CircleBorder()),
                 ),

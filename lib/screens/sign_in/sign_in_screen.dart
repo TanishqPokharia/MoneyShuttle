@@ -1,4 +1,4 @@
-import 'package:cash_swift/auth/user_authentication.dart';
+import 'package:cash_swift/services/auth_service/user_authentication_service.dart';
 import 'package:cash_swift/themes/dark.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/providers/home/user_data_provider.dart';
@@ -183,6 +183,6 @@ class SignInScreen extends HookConsumerWidget {
 
     final email = credentials['email'];
     final password = credentials['password'];
-    await UserAuthentication.signInUser(context, email!, password!);
+    await UserAuthenticationService.signInUser(context, email!, password!);
   }
 }

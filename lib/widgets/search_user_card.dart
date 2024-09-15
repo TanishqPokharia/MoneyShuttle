@@ -31,6 +31,7 @@ class SearchUserTile extends ConsumerWidget {
         name: cashSwiftUser.username,
         nameDisplayOption: NameDisplayOptions.initials,
         fontColor: Colors.white,
+        fit: BoxFit.cover,
         image: ref.watch(profilePhotoProvider(cashSwiftUser.id!)).when(
               loading: () => null,
               error: (error, stackTrace) {

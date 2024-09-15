@@ -1,14 +1,13 @@
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/models/payment_category.dart';
 import 'package:cash_swift/models/user_data/user_data.dart';
-import 'package:cash_swift/notification_services/notification_services.dart';
-import 'package:cash_swift/providers/home/user_data_provider.dart';
+import 'package:cash_swift/services/notification_services/notification_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class UserAuthentication {
+class UserAuthenticationService {
   static signInUser(BuildContext context, String email, String password) async {
     try {
       await FirebaseAuth.instance

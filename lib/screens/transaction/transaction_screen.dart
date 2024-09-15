@@ -48,8 +48,7 @@ class TransactionScreen extends ConsumerWidget {
                       style: context.textMedium,
                     ),
                   ),
-                  Text("+91 ${cashSwiftUser.phoneNumber!}",
-                      style: context.textMedium),
+                  Text("${cashSwiftUser.id}", style: context.textMedium),
                   Container(
                     margin: EdgeInsets.symmetric(
                         horizontal: context.rSize(150),

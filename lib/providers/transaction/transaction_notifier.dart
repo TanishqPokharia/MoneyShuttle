@@ -1,12 +1,13 @@
+import 'package:cash_swift/models/chat_data/chat_data.dart';
+import 'package:cash_swift/models/user_data/user_data.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
 import 'package:cash_swift/models/transaction_status.dart';
 import 'package:cash_swift/models/user_history/user_history.dart';
-import 'package:cash_swift/notification_services/notification_services.dart';
+import 'package:cash_swift/services/notification_services/notification_services.dart';
 import 'package:cash_swift/providers/transaction/category_list_provider.dart';
 import 'package:cash_swift/providers/transaction/data_providers.dart';
 import 'package:cash_swift/providers/transaction/transaction_status_provider.dart';
-import 'package:cash_swift/router/router_config.dart';
 import 'package:cash_swift/widgets/procesiing_transaction.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,28 +38,27 @@ class TransactionNotifier extends StateNotifier<void> {
   Future<void> validatePin(BuildContext context, WidgetRef ref, String pin,
       CashSwiftUser cashSwiftUser) async {
     final savedContext = context;
-    initiateTransaction(savedContext);
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.4),
       builder: (context) {
         return Dialog(
+          backgroundColor: context.backgroundColor,
           elevation: 5,
           insetAnimationDuration: const Duration(milliseconds: 300),
           insetAnimationCurve: Curves.easeIn,
           child: Container(
-            height: context.rSize(300),
+            height: context.rSize(350),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "Enter PIN",
-                  style: context.textMedium!.copyWith(color: Colors.black),
+                  style: context.textMedium,
                 ),
                 Container(
-                  height: context.rSize(100),
                   child: Pinput(
                     keyboardType: TextInputType.phone,
                     cursor: Container(
@@ -88,7 +88,13 @@ class TransactionNotifier extends StateNotifier<void> {
                     },
                     autofocus: true,
                     onCompleted: (value) async {
-                      await beginTransacting(savedContext, ref, cashSwiftUser);
+                      if (value != pin) {
+                        return;
+                      } else {
+                        initiateTransaction(savedContext);
+                        await beginTransacting(
+                            savedContext, ref, cashSwiftUser);
+                      }
                     },
                   ),
                 ),
@@ -96,7 +102,6 @@ class TransactionNotifier extends StateNotifier<void> {
                   width: context.rSize(120),
                   child: TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
                         Navigator.pop(context);
                       },
                       child: Text("Cancel")),
@@ -118,10 +123,12 @@ class TransactionNotifier extends StateNotifier<void> {
     try {
       final user = FirebaseAuth.instance.currentUser;
 
-      final userData = await FirebaseFirestore.instance
+      final userDataRaw = await FirebaseFirestore.instance
           .collection("users")
           .doc(user!.uid)
           .get();
+
+      final UserData userData = UserData.fromJson(userDataRaw.data() ?? {});
 
       final amount = ref.watch(paymentAmountProvider);
       final category = ref
@@ -129,7 +136,7 @@ class TransactionNotifier extends StateNotifier<void> {
           .getSelectedCategoryAndColor()[0] as String;
 
       //perform transaction
-      var userBalance = userData['balance'];
+      var userBalance = userData.balance;
       var receiverBalance = cashSwiftUser.balance;
 
       if (userBalance > 0 && userBalance > double.parse(amount)) {
@@ -138,36 +145,77 @@ class TransactionNotifier extends StateNotifier<void> {
         print("Transaction performed");
 
         // update userBalance and update the payment category balance
-        await updateUserBalance(user, userBalance, category, userData, amount);
+        await updateUserBalance(
+            user, userBalance, category, userDataRaw, amount);
         //update receiver balance
         final findReceiverData = await FirebaseFirestore.instance
             .collection("users")
             .where("phone", isEqualTo: cashSwiftUser.phoneNumber)
             .get();
+
         await updateReceiverBalance(
             cashSwiftUser, receiverBalance, findReceiverData);
 
-        final receiverData = findReceiverData.docs.first.data();
+        final receiverDataRaw = findReceiverData.docs.first.data();
 
         // update user history
-        await updateUserHistory(receiverData, userData, amount, category, ref);
+        await updateUserHistory(
+            receiverDataRaw, userDataRaw, amount, category, ref);
 
         //update receiver history
 
-        await updateReceiverHistory(
-            receiverData, userData, amount, category, findReceiverData, ref);
+        await updateReceiverHistory(receiverDataRaw, userDataRaw, amount,
+            category, findReceiverData, ref);
+
+        // add to chats
+
+        final UserData receiverData = UserData.fromJson(receiverDataRaw);
+
+        // receiver chat data
+        final ChatData receiverChatData = ChatData(
+            id: receiverData.msId,
+            username: receiverData.username,
+            latestMessage: null,
+            phone: receiverData.phone,
+            msId: receiverData.msId,
+            deviceToken: receiverData.deviceToken);
+
+        // user chat data
+        final ChatData userChatData = ChatData(
+            id: userData.msId,
+            username: userData.username,
+            latestMessage: null,
+            phone: userData.phone,
+            msId: userData.msId,
+            deviceToken: userData.deviceToken);
+
+        // add receiver as a chat friend to user
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .collection("chats")
+            .doc(findReceiverData.docs.first.id)
+            .set(receiverChatData.toJson());
+
+        // add user as a chat friend to receiver
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(findReceiverData.docs.first.id)
+            .collection("chats")
+            .doc(user.uid)
+            .set(userChatData.toJson());
 
         //fire notification to user and receiver
         NotificationServices.sendNotification(
-            userToken: userData['deviceToken'],
-            receiverToken: receiverData['deviceToken'],
+            userToken: userDataRaw['deviceToken'],
+            receiverToken: receiverDataRaw['deviceToken'],
             userNotificationBody: "₹ $amount sent to ${cashSwiftUser.username}",
             receiverNotificationBody:
-                "₹ $amount received from ${userData['username']}");
+                "₹ $amount received from ${userDataRaw['username']}");
 
         // go to next transaction status screen
 
-        ref.read(transactionStatusProvider.notifier).state = true;
+        ref.read(transactionStatusProvider.notifier).update((state) => true);
         Navigator.pop(savedContext);
 
         final transactionStatus = TransactionStatus(

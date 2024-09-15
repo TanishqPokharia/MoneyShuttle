@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:app_settings/app_settings.dart';
 import 'package:cash_swift/utils/constants.dart';
@@ -147,5 +148,6 @@ class NotificationServices {
           "Authorization": "key=$notificationKey"
         },
         body: jsonEncode(receiverData));
+    log("Notifications have been sent");
   }
 }

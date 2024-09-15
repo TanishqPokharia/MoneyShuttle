@@ -1,5 +1,5 @@
 import 'package:cash_swift/firebase_options.dart';
-import 'package:cash_swift/notification_services/notification_services.dart';
+import 'package:cash_swift/services/notification_services/notification_services.dart';
 import 'package:cash_swift/providers/theme_provider.dart';
 import 'package:cash_swift/router/router_config.dart';
 import 'package:cash_swift/themes/dark.dart';
@@ -25,11 +25,11 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
-  runApp(const ProviderScope(child: CashSwiftApp()));
+  runApp(const ProviderScope(child: MoneyShuttleApp()));
 }
 
-class CashSwiftApp extends ConsumerWidget {
-  const CashSwiftApp({super.key});
+class MoneyShuttleApp extends ConsumerWidget {
+  const MoneyShuttleApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

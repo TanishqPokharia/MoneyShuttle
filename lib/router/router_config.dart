@@ -1,4 +1,6 @@
 import 'package:cash_swift/screens/balance/balance_screen.dart';
+import 'package:cash_swift/screens/chat/chat_list_screen.dart';
+import 'package:cash_swift/screens/chat/chat_screen.dart';
 import 'package:cash_swift/screens/custom_qr/custom_qr_screen.dart';
 import 'package:cash_swift/screens/history/transaction_history_screen.dart';
 import 'package:cash_swift/screens/home/home_screen.dart';
@@ -55,11 +57,15 @@ class AppRouter {
             child: HomeScreen(),
             transitionsBuilder: (context, animation, secondaryAnimation,
                     child) =>
-                SlideTransition(
-                  position: Tween<Offset>(begin: Offset(0, 1), end: Offset.zero)
-                      .chain(CurveTween(curve: Curves.fastEaseInToSlowEaseOut))
-                      .animate(animation),
-                  child: child,
+                Align(
+                  child: SizeTransition(
+                    sizeFactor: Tween<double>(begin: 0, end: 1)
+                        .chain(
+                            CurveTween(curve: Curves.fastEaseInToSlowEaseOut))
+                        .animate(animation),
+                    axisAlignment: -1,
+                    child: child,
+                  ),
                 )),
         routes: [
           GoRoute(
@@ -77,6 +83,25 @@ class AppRouter {
                       transactionHistoryList: data, balance: balance));
             },
           ),
+          GoRoute(
+              path: "chatlist",
+              pageBuilder: (context, state) {
+                final msIdUser = state.extra as String;
+                return MaterialPage(child: ChatListScreen(msIdUser));
+              },
+              routes: [
+                GoRoute(
+                  path: "chat",
+                  pageBuilder: (context, state) {
+                    final ids = state.extra as Map<String, dynamic>;
+                    return MaterialPage(
+                        child: ChatScreen(
+                      msIdUser: ids['msIdUser'],
+                      chatData: ids['chatData'],
+                    ));
+                  },
+                ),
+              ]),
           GoRoute(
             path: "customQR",
             pageBuilder: (context, state) => CustomTransitionPage(

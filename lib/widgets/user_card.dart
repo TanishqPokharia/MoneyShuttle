@@ -22,96 +22,90 @@ class UserMoneyShuttleCard extends StatelessWidget {
           bottom: context.rSize(10),
           left: context.rSize(20),
           right: context.rSize(20)),
-      child: Shine.Shimmer(
-        interval: Duration(seconds: 3),
-        child: Material(
-          borderRadius: BorderRadius.circular(context.rSize(20)),
-          type: MaterialType.card,
-          elevation: 10,
-          color: Colors.transparent,
-          child: Container(
-            padding: EdgeInsets.all(context.rSize(20)),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(context.rSize(10)),
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.grey.shade900,
-                      Colors.grey.shade800,
-                      Colors.grey.shade700,
-                      Colors.grey.shade600,
-                      Colors.grey.shade700,
-                      Colors.grey.shade900
-                    ])),
-            width: double.infinity,
-            height: context.rSize(250),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Text(
-                        "MoneyShuttle",
-                        style:
-                            context.textMedium!.copyWith(color: Colors.white),
-                      ),
+      child: Material(
+        borderRadius: BorderRadius.circular(context.rSize(20)),
+        type: MaterialType.card,
+        elevation: 10,
+        color: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.all(context.rSize(20)),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(context.rSize(10)),
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.grey.shade900,
+                    Colors.grey.shade800,
+                    Colors.grey.shade700,
+                    Colors.grey.shade600,
+                    Colors.grey.shade700,
+                    Colors.grey.shade900
+                  ])),
+          width: double.infinity,
+          height: context.rSize(250),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Text(
+                      "MoneyShuttle",
+                      style: context.textMedium!.copyWith(color: Colors.white),
                     ),
-                    Image.asset(
-                      "assets/chip.png",
-                      height: context.rSize(80),
-                      width: context.rSize(80),
+                  ),
+                  Image.asset(
+                    "assets/chip.png",
+                    height: context.rSize(80),
+                    width: context.rSize(80),
+                  ),
+                  Container(
+                    child: Text(
+                      msId,
+                      style: context.textSmall!.copyWith(
+                          fontSize: context.rSize(20), color: Colors.white),
                     ),
-                    Container(
-                      child: Text(
-                        msId,
-                        style: context.textSmall!.copyWith(
-                            fontSize: context.rSize(20), color: Colors.white),
-                      ),
+                  ),
+                  Container(
+                    width: context.rSize(250),
+                    child: Text(
+                      username,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textMedium!.copyWith(color: Colors.white),
                     ),
-                    Container(
-                      width: context.rSize(250),
-                      child: Text(
-                        username,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            context.textMedium!.copyWith(color: Colors.white),
-                      ),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                      height: context.rSize(150),
+                      width: context.rSize(150),
+                      child: GestureDetector(
+                        onTap: onPressQR,
+                        child: QrImageView(
+                          eyeStyle: const QrEyeStyle(
+                              color: Colors.white, eyeShape: QrEyeShape.square),
+                          dataModuleStyle: const QrDataModuleStyle(
+                              color: Colors.white,
+                              dataModuleShape: QrDataModuleShape.square),
+                          data: "/$msId",
+                        ),
+                      )),
+                  Container(
+                    child: Text(
+                      "QR Code",
+                      style: context.textSmall!.copyWith(color: Colors.white),
                     ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(
-                        height: context.rSize(150),
-                        width: context.rSize(150),
-                        child: GestureDetector(
-                          onTap: onPressQR,
-                          child: QrImageView(
-                            eyeStyle: const QrEyeStyle(
-                                color: Colors.white,
-                                eyeShape: QrEyeShape.square),
-                            dataModuleStyle: const QrDataModuleStyle(
-                                color: Colors.white,
-                                dataModuleShape: QrDataModuleShape.square),
-                            data: "/$msId",
-                          ),
-                        )),
-                    Container(
-                      child: Text(
-                        "QR Code",
-                        style: context.textSmall!.copyWith(color: Colors.white),
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
+                  )
+                ],
+              )
+            ],
           ),
         ),
       ),

@@ -1,4 +1,4 @@
-import 'package:cash_swift/auth/user_authentication.dart';
+import 'package:cash_swift/services/auth_service/user_authentication_service.dart';
 import 'package:cash_swift/themes/dark.dart';
 import 'package:cash_swift/utils/extensions.dart';
 import 'package:cash_swift/models/cash_swift_user.dart';
@@ -305,7 +305,7 @@ class SignUpScreen extends HookConsumerWidget {
     final phoneNumber = credentials["phone"];
     final pin = credentials["pin"];
 
-    await UserAuthentication.signUpUser(
+    await UserAuthenticationService.signUpUser(
         context,
         CashSwiftUser(
             email: email,

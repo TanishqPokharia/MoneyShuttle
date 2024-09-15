@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CloudStorage {
+class CloudStorageService {
   static final instance = FirebaseStorage.instance;
 
   static Future<String> getUserProfilePictureUrl(String msId) async {
