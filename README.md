@@ -1,6 +1,29 @@
-# CashSwift, Rapid fast payments on the go - Your Ultimate Payments App 💸💳
+# MoneyShuttle, Rapid fast payments on the go - Your Ultimate Payments App 💸💳
 
-CashSwift is a payments app designed to streamline your financial transactions. With a sleek interface and robust features, managing your money has never been easier.
+MoneyShuttle is a payments app designed to streamline your financial transactions. With a sleek interface and robust features, managing your money has never been easier.
+
+# CashSwift is now MoneyShuttle
+
+New name, new logo , new features, and new and improved UI! 
+
+<img src="https://github.com/user-attachments/assets/badad2b8-c6fd-48b1-b8f9-4b7bcf8f75c0" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/c13a464f-2d19-4ad5-bc85-c6ca07b419b3" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/d6a1304b-2b2a-408c-9427-0e29f63e7122" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/808ab9c2-2995-4701-a89f-46fc35ad1577" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/a9169d4f-a455-46c2-b112-0c32208e6fab" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/68809307-7ac4-4eb8-9d4d-e8ca16447c6f" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/f2c9536f-e725-451c-8d7b-bb6bff419127" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/6d5f7df4-9248-4a6b-a07f-5a99c035580b" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/658c8daa-a763-4f6b-b026-c1b935102c8e" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/e5acfdd2-78c5-4bac-972e-43a3609e0b12" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/9edcf3a2-a505-4e31-ba2c-5fb4ab659cae" width="150" height="300" />
+<img src="https://github.com/user-attachments/assets/b773d6cc-5577-4493-b26a-aec1aae1add1" width="150" height="300" />
+
+### 1. Enabled chatting between users
+### 2. Added dedicated profile pages, dynamic themes based on user preference
+### 3. Revamped UI with a more pleasing interface and animations
+
+
 
 ## Try it out
   - https://drive.google.com/drive/folders/1MpPELsSmJkWttSE17jdvnSe5C1TSleqX?usp=sharing
