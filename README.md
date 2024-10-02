@@ -1,10 +1,10 @@
 # MoneyShuttle, Rapid fast payments on the go - Your Ultimate Payments App 💸💳
 
-MoneyShuttle is a payments app designed to streamline your financial transactions. With a sleek interface and robust features, managing your money has never been easier.
+MoneyShuttle is a payments app designed to streamline your financial transactions. With a sleek interface and robust features, managing your money has never been easier. PS This app does not allow real money transfer between users cause that's paid and has restrictions and licensing processes 🤡, this app just mimics GPay, Paytm etc using every bit of Firebase there is to be utilized be it Firestore, Cloud Storage, Authentication, Push Notifications etc...
 
 # CashSwift is now MoneyShuttle
 
-### New name, new logo , new features, and new and improved UI! 
+### New name, new logo , new features, and new and improved UI! (scroll down to compare old one 🤢)
 
 <img src="https://github.com/user-attachments/assets/badad2b8-c6fd-48b1-b8f9-4b7bcf8f75c0" width="150" height="300" />
 <img src="https://github.com/user-attachments/assets/c13a464f-2d19-4ad5-bc85-c6ca07b419b3" width="150" height="300" />
