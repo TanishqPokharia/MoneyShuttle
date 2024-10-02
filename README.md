@@ -4,7 +4,7 @@ MoneyShuttle is a payments app designed to streamline your financial transaction
 
 # CashSwift is now MoneyShuttle
 
-New name, new logo , new features, and new and improved UI! 
+### New name, new logo , new features, and new and improved UI! 
 
 <img src="https://github.com/user-attachments/assets/badad2b8-c6fd-48b1-b8f9-4b7bcf8f75c0" width="150" height="300" />
 <img src="https://github.com/user-attachments/assets/c13a464f-2d19-4ad5-bc85-c6ca07b419b3" width="150" height="300" />
@@ -19,9 +19,9 @@ New name, new logo , new features, and new and improved UI!
 <img src="https://github.com/user-attachments/assets/9edcf3a2-a505-4e31-ba2c-5fb4ab659cae" width="150" height="300" />
 <img src="https://github.com/user-attachments/assets/b773d6cc-5577-4493-b26a-aec1aae1add1" width="150" height="300" />
 
-### 1. Enabled chatting between users
-### 2. Added dedicated profile pages, dynamic themes based on user preference
-### 3. Revamped UI with a more pleasing interface and animations
+#### 1. Enabled chatting between users
+#### 2. Added dedicated profile pages, dynamic themes based on user preference
+#### 3. Revamped UI with a more pleasing interface and animations
 
 
 
