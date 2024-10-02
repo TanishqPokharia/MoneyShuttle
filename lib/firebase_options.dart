@@ -42,40 +42,4 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDkF8s4m4C5qkzEEpKLbA91seqTudEY9tE',
-    appId: '1:263777155260:web:e11da99affc8f592bd38b9',
-    messagingSenderId: '263777155260',
-    projectId: 'finchat-361e8',
-    authDomain: 'finchat-361e8.firebaseapp.com',
-    storageBucket: 'finchat-361e8.appspot.com',
-    measurementId: 'G-XBDNZQ04YK',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCVYiUIiZxtXwjtHqBNt2jsoE8BU6dF1EE',
-    appId: '1:263777155260:android:722c86992f5527cbbd38b9',
-    messagingSenderId: '263777155260',
-    projectId: 'finchat-361e8',
-    storageBucket: 'finchat-361e8.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAz_n2H36n32WbZEGgNwKz71qrBPxdgjPY',
-    appId: '1:263777155260:ios:736dd79012b05142bd38b9',
-    messagingSenderId: '263777155260',
-    projectId: 'finchat-361e8',
-    storageBucket: 'finchat-361e8.appspot.com',
-    iosBundleId: 'com.example.cashSwift',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAz_n2H36n32WbZEGgNwKz71qrBPxdgjPY',
-    appId: '1:263777155260:ios:8cf98d7cfaaab8f9bd38b9',
-    messagingSenderId: '263777155260',
-    projectId: 'finchat-361e8',
-    storageBucket: 'finchat-361e8.appspot.com',
-    iosBundleId: 'com.example.cashSwift.RunnerTests',
-  );
 }
